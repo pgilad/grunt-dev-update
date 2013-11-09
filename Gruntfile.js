@@ -36,8 +36,10 @@ module.exports = function (grunt) {
         devUpdate: {
             main: {
                 options: {
-                    reportUpdated: false,
-                    updateType   : "prompt" //could be force|report
+                    //should task report already updated dependencies
+                    reportUpdated: true,
+                    //can be force|report|prompt
+                    updateType   : "force" //could be force|report|prompt
                 }
             }
         }

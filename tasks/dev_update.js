@@ -12,32 +12,56 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('devUpdate', 'See your outdated devDependencies and update them', function () {
 
-        var async = require('async');
-        var _ = require('lodash');
+        var async = require('async'),
+            _ = require('lodash'),
+            inquirer = require("inquirer"),
 
-        var options = this.options();
+        //object to contain outdated packages
+            resultsObj = {},
+        //get dev dependencies
+            devDeps = require('matchdep').filterDev('*'),
+        //default spawn options
+            spawnOptions = {
+                cmd  : 'npm',
+                grunt: false,
+                opts : {}
+            },
+            self = this,
+            options = this.options() || {},
+            updateOptions = ['report', 'force', 'prompt'];
+
+        //defaults
+        _.defaults(options, {updateType: 'report', reportUpdated: false});
+
+        //validate updateType option
+        if (!_.contains(updateOptions, options.updateType)) {
+            grunt.fail.warn('Invalid value for option updateType:', options.updateType);
+            options.updateType = 'report'; //default
+        }
+
         grunt.verbose.writeflags(options, 'Running task with options');
         grunt.verbose.writelns("Using target " + this.target);
 
         //setup async
         var endTask = this.async();
 
-        //get dev dependencies
-        var devDeps = require('matchdep').filterDev('*');
+        grunt.log.oklns('Found %s devDependencies to check for latest version', devDeps.length);
 
-        //object to contain outdated packages
-        var tasksObject = {};
+        var updatePackage = function (dep, done) {
+            spawnOptions.args = ['install', dep, '--save-dev'];
+            grunt.util.spawn(spawnOptions, function (error, result, code) {
+                if (error) {
+                    var errObj = {task: dep, command: spawnOptions.cmd + ' ' + spawnOptions.args.join(' ')};
+                    done(error);
+                    return;
+                }
 
-        //default spawn options
-        var spawnOptions = {
-            cmd  : 'npm',
-            grunt: false,
-            opts : {}
+                grunt.log.oklns('Successfully updated package %s', dep);
+                done();
+            });
         };
 
-        grunt.log.oklns('Found %s tasks to check latest version', devDeps.length);
-
-        //get local tasks versions
+        /** Fetching data phase **/
         async.each(
             devDeps,
             function (devDep, callback) {
@@ -47,16 +71,17 @@ module.exports = function (grunt) {
                 grunt.util.spawn(spawnOptions, function (error, result, code) {
                     //todo
                     if (error) {
-                        var errObj = {task: devDep, command: opt.cmd + ' ' + opt.args.join(' ')};
+                        var errObj = {task: devDep, command: spawnOptions.cmd + ' ' + spawnOptions.args.join(' ')};
                         callback();
                         return;
                     }
 
-                    tasksObject[devDep] = {
+                    //insert devDep into taskObject as a key with localVersion
+                    resultsObj[devDep] = {
                         localVersion: JSON.parse(result).dependencies[devDep].version
                     };
 
-                    grunt.verbose.writelns('Got local version for package %s -> %s', devDep, tasksObject[devDep].localVersion);
+                    grunt.verbose.writelns('Got local version for package %s -> %s', devDep, resultsObj[devDep].localVersion);
                     spawnOptions.args = ['view', devDep, 'version'];
 
                     grunt.util.spawn(spawnOptions, function (error, result, code) {
@@ -67,17 +92,14 @@ module.exports = function (grunt) {
                         }
 
                         //version is the same
-                        if (result.stdout === tasksObject[devDep].localVersion) {
+                        if (result.stdout === resultsObj[devDep].localVersion) {
                             var logMethod = options.reportUpdated ? grunt.log.oklns : grunt.verbose.oklns;
                             logMethod('Package %s is at latest version %s', devDep, result.stdout);
-
+                            resultsObj[devDep].atLatest = true;
                         }
-                        else {
-                            //task is updated
-                            //delete tasksObject[task];
-                        }
-                        tasksObject[devDep].remoteVersion = result.stdout;
+                        resultsObj[devDep].remoteVersion = result.stdout;
 
+                        grunt.verbose.writelns('Got remote version for package %s -> %s', devDep, result.stdout);
                         callback();
                     });
                 });
@@ -87,8 +109,37 @@ module.exports = function (grunt) {
                     grunt.log.error('Got error in the way', err);
                     return;
                 }
-                console.log('final:', tasksObject);
-                endTask();
+
+                /** Update phase **/
+                grunt.log.writelns('Finished fetching local and remote versions.');
+
+                async.eachSeries(_.keys(resultsObj), function (depKey, callback) {
+                    var dep = resultsObj[depKey];
+                    if (dep.atLatest) {
+                        callback();
+                        return;
+                    }
+
+                    grunt.log.subhead('package %s is outdated.\nLocal version: %s, Latest version %s',
+                        depKey, dep.localVersion, dep.remoteVersion);
+
+                    if (options.updateType === 'report') {
+                        callback();
+                    }
+                    else if (options.updateType === 'prompt') {
+                        var msg = 'update using [npm install ' + depKey + ' --save-dev]';
+                        inquirer.prompt({ name: 'confirm', message: msg, type: "confirm" }, function (result) {
+                            if (result.confirm) {
+                                updatePackage(depKey, callback);
+                                return;
+                            }
+                            callback();
+                        });
+                    }
+                    else if (options.updateType === 'force') {
+                        updatePackage(depKey, callback);
+                    }
+                }, endTask);
             }
         );
     });
