@@ -1,6 +1,7 @@
 # grunt-dev-update
 
-> Update your devDependencies with ease
+> Update your npm package.json devDependencies with a grunt task
+####UNDER CONSTRUCTION####
 
 ## Getting Started
 This plugin requires Grunt.
@@ -16,6 +17,17 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 ```js
 grunt.loadNpmTasks('grunt-dev-update');
 ```
+
+An alternative and highly recommended way to load all grunt npm tasks is installing `matchdep`:
+```js
+npm install matchdep --save-dev
+```
+
+And then add to your grunt file:
+```js
+require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+```
+
 
 ## The "dev_update" task
 
