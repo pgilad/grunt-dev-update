@@ -16,67 +16,67 @@ module.exports = function (grunt) {
         var _ = require('lodash');
 
         var options = this.options();
-        grunt.verbose.writeflags(options, 'Options');
+        grunt.verbose.writeflags(options, 'Running task with options');
+        grunt.verbose.writelns("Using target " + this.target);
 
+        //setup async
         var endTask = this.async();
 
         //get dev dependencies
-        var tasks = require('matchdep').filterDev('*');
+        var devDeps = require('matchdep').filterDev('*');
 
         //object to contain outdated packages
         var tasksObject = {};
 
         //default spawn options
-        var defaultSpawnOptions = {
+        var spawnOptions = {
             cmd  : 'npm',
             grunt: false,
             opts : {}
         };
 
-        // Iterate over all specified file groups.
-        this.files.forEach(function(f) {
-            // Do something to some files...
-
-            // Print a success message.
-            grunt.log.writeln('File "' + f.dest + '" created.');
-        });
-
-        grunt.log.oklns('Found %s tasks to check latest version', tasks.length);
+        grunt.log.oklns('Found %s tasks to check latest version', devDeps.length);
 
         //get local tasks versions
         async.each(
-            tasks,
-            function (task, callback) {
+            devDeps,
+            function (devDep, callback) {
                 //make current task arguments
-                var opt = _.clone(defaultSpawnOptions);
-                opt.args = ['list', task, '--json', '--depth=1'];
+                spawnOptions.args = ['list', devDep, '--json', '--depth=1'];
 
-                grunt.util.spawn(opt, function (error, result, code) {
+                grunt.util.spawn(spawnOptions, function (error, result, code) {
+                    //todo
                     if (error) {
-                        var errObj = {task: task, command: opt.cmd + ' ' + opt.args.join(' ')};
+                        var errObj = {task: devDep, command: opt.cmd + ' ' + opt.args.join(' ')};
                         callback();
                         return;
                     }
-                    tasksObject[task] = {
-                        localVersion: JSON.parse(result).dependencies[task].version
+
+                    tasksObject[devDep] = {
+                        localVersion: JSON.parse(result).dependencies[devDep].version
                     };
 
-                    var nextOpt = _.clone(defaultSpawnOptions);
-                    nextOpt.args = ['view', task, 'version'];
+                    grunt.verbose.writelns('Got local version for package %s -> %s', devDep, tasksObject[devDep].localVersion);
+                    spawnOptions.args = ['view', devDep, 'version'];
 
-                    grunt.util.spawn(nextOpt, function (error, result, code) {
+                    grunt.util.spawn(spawnOptions, function (error, result, code) {
+                        //TODO
                         if (error) {
-                            callback({task: task, error: error, code: code});
+                            callback({task: devDep, error: error, code: code});
                             return;
                         }
 
-                        if (result.stdout !== tasksObject[task].localVersion) {
+                        //version is the same
+                        if (result.stdout === tasksObject[devDep].localVersion) {
+                            var logMethod = options.reportUpdated ? grunt.log.oklns : grunt.verbose.oklns;
+                            logMethod('Package %s is at latest version %s', devDep, result.stdout);
+
                         }
                         else {
                             //task is updated
                             //delete tasksObject[task];
                         }
-                        tasksObject[task].remoteVersion = result.stdout;
+                        tasksObject[devDep].remoteVersion = result.stdout;
 
                         callback();
                     });

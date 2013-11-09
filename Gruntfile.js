@@ -34,14 +34,13 @@ module.exports = function (grunt) {
         },
 
         devUpdate: {
-            options: {
-                update: true
-            },
-            main   : {
-
+            main: {
+                options: {
+                    reportUpdated: false,
+                    updateType   : "prompt" //could be force|report
+                }
             }
         }
-
     });
 
     // load all npm grunt tasks
