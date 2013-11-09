@@ -26,8 +26,11 @@ module.exports = function (grunt) {
                 grunt: false,
                 opts : {}
             },
-            self = this,
             options = this.options() || {},
+            stats = {
+                outdated: 0,
+                upToDate: 0
+            },
             updateOptions = ['report', 'force', 'prompt'];
 
         //defaults
@@ -45,7 +48,7 @@ module.exports = function (grunt) {
         //setup async
         var endTask = this.async();
 
-        grunt.log.oklns('Found %s devDependencies to check for latest version', devDeps.length);
+        grunt.log.writeln('Found %s devDependencies to check for latest version', devDeps.length);
 
         var updatePackage = function (dep, done) {
             spawnOptions.args = ['install', dep, '--save-dev'];
@@ -93,9 +96,13 @@ module.exports = function (grunt) {
 
                         //version is the same
                         if (result.stdout === resultsObj[devDep].localVersion) {
+                            ++stats.upToDate;
                             var logMethod = options.reportUpdated ? grunt.log.oklns : grunt.verbose.oklns;
                             logMethod('Package %s is at latest version %s', devDep, result.stdout);
                             resultsObj[devDep].atLatest = true;
+                        }
+                        else {
+                            ++stats.outdated;
                         }
                         resultsObj[devDep].remoteVersion = result.stdout;
 
@@ -111,7 +118,7 @@ module.exports = function (grunt) {
                 }
 
                 /** Update phase **/
-                grunt.log.writelns('Finished fetching local and remote versions.');
+                grunt.log.oklns('Found %s devDependencies. %s up-to-date, %s outdated', devDeps.length, stats.upToDate, stats.outdated);
 
                 async.eachSeries(_.keys(resultsObj), function (depKey, callback) {
                     var dep = resultsObj[depKey];
