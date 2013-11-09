@@ -62,7 +62,9 @@ Default value: `report`
 How devUpdate should handle the outdated packages. Valid options:
 
 `report` - Just report that the package is outdated.
+
 `prompt` - Prompt user to confirm update of every package
+
 `force` - Automatically force the update for the outdated packages.
 
 ### Usage Examples
