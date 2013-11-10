@@ -74,6 +74,7 @@ module.exports = function (grunt) {
                 grunt.util.spawn(spawnOptions, function (error, result, code) {
                     //todo
                     if (error) {
+                        grunt.log.writelns('Skipping package %s after encountered error', devDep);
                         var errObj = {task: devDep, command: spawnOptions.cmd + ' ' + spawnOptions.args.join(' ')};
                         callback();
                         return;
@@ -90,7 +91,10 @@ module.exports = function (grunt) {
                     grunt.util.spawn(spawnOptions, function (error, result, code) {
                         //TODO
                         if (error) {
-                            callback({task: devDep, error: error, code: code});
+                            grunt.log.writelns('Skipping package %s after encountered error', devDep);
+                            resultsObj[devDep].isError = true;
+                            //{task: devDep, error: error, code: code}
+                            callback();
                             return;
                         }
 
@@ -122,7 +126,7 @@ module.exports = function (grunt) {
 
                 async.eachSeries(_.keys(resultsObj), function (depKey, callback) {
                     var dep = resultsObj[depKey];
-                    if (dep.atLatest) {
+                    if (dep.atLatest || dep.isError) {
                         callback();
                         return;
                     }
