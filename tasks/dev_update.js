@@ -124,8 +124,6 @@ module.exports = function (grunt) {
                 }
 
                 /** Update phase **/
-                grunt.log.oklns('Found %s devDependencies. %s up-to-date, %s outdated', devDeps.length, stats.upToDate, stats.outdated);
-
                 async.eachSeries(_.keys(resultsObj), function (depKey, callback) {
                     var dep = resultsObj[depKey];
                     if (dep.atLatest || dep.isError) {
@@ -152,7 +150,10 @@ module.exports = function (grunt) {
                     else if (options.updateType === 'force') {
                         updatePackage(depKey, callback);
                     }
-                }, endTask);
+                }, function () {
+                    grunt.log.oklns('Found %s devDependencies. %s up-to-date, %s outdated', devDeps.length, stats.upToDate, stats.outdated);
+                    endTask();
+                });
             }
         );
     });
