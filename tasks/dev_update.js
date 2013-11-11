@@ -19,7 +19,6 @@ module.exports = function (grunt) {
         //object to contain outdated packages
             resultsObj = {},
         //get dev dependencies
-            devDeps = require('matchdep').filterDev('*'),
         //default spawn options
             spawnOptions = {
                 cmd  : 'npm',
@@ -44,6 +43,9 @@ module.exports = function (grunt) {
 
         grunt.verbose.writeflags(options, 'Running task with options');
         grunt.verbose.writelns("Using target " + this.target);
+
+        //TODO add package.json route to options
+        var devDeps = require('matchdep').filterDev('*', process.cwd() + '/package.json');
 
         //setup async
         var endTask = this.async();
