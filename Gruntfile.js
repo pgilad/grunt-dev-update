@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                     //should task report already updated dependencies
                     reportUpdated: false,
                     //can be force|report|prompt
-                    updateType   : "report" //could be force|report|prompt
+                    updateType   : "prompt" //could be force|report|prompt
                 }
             }
         }
