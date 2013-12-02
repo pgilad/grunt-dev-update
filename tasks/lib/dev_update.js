@@ -9,7 +9,8 @@
 var async = require('async'),
     _ = require('lodash'),
     inquirer = require("inquirer"),
-    path = require('path');
+    path = require('path'),
+    ProgressBar = require('progress');
 
 module.exports = function (grunt) {
 
@@ -65,9 +66,15 @@ module.exports = function (grunt) {
      */
     exports.getLocalPackageVersion = function (packages, done) {
         /** Fetching data phase **/
+
+        var bar = new ProgressBar('Getting local packages versions [:bar] :percent :etas', { total: packages.length });
+
         async.each(packages,
             function (devDep, callback) {
                 //make current task arguments
+
+                bar.tick();
+
                 exports.spawnOptions.args = exports.getSpawnArguments(devDep, 'local');
                 exports.results[devDep] = {};
 
@@ -109,9 +116,14 @@ module.exports = function (grunt) {
      * @param {Function} done callback function
      */
     exports.getRemotePackageVersion = function (packages, done) {
+
+        var bar = new ProgressBar('Getting remote packages versions [:bar] :percent :etas', { total: packages.length });
+
         /** Fetching data phase **/
         async.each(packages,
             function (devDep, callback) {
+
+                bar.tick();
                 //make current task arguments
                 exports.spawnOptions.args = exports.getSpawnArguments(devDep, 'remote');
 
@@ -187,6 +199,7 @@ module.exports = function (grunt) {
      */
     exports.updatePackage = function (devDep, done) {
         exports.spawnOptions.args = exports.getSpawnArguments(devDep, 'update');
+        exports.spawnOptions.opts = {stdio: 'inherit'};
         grunt.util.spawn(exports.spawnOptions, function (error, result, code) {
             if (error) {
                 grunt.verbose.writelns(error);
@@ -208,12 +221,15 @@ module.exports = function (grunt) {
                 //get local packages version
                 exports.getLocalPackageVersion(exports.devDeps, callback);
             },
+
             function (callback) {
                 exports.getRemotePackageVersion(exports.devDeps, callback);
             },
+
             function (callback) {
                 exports.processByUpdateType(exports.devDeps, callback);
             }
+
         ], function (err) {
             if (err) {
                 grunt.log.error('Task failed due to error', err);
