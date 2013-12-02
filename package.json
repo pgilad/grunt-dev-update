@@ -1,51 +1,51 @@
 {
-    "name"            : "grunt-dev-update",
-    "version"         : "0.1.5",
-    "description"     : "Update your npm package.json devDependencies with a grunt task",
-    "homepage"        : "http://pgilad.github.io/grunt-dev-update",
-    "bugs"            : "https://github.com/pgilad/grunt-dev-update/issues",
-    "author"          : {
-        "name" : "Gilad Peleg",
-        "email": "giladp007@gmail.com"
-    },
-    "keywords"        : [
-        "gruntplugin",
-        "devDependencies",
-        "npm install",
-        "save-dev",
-        "automation",
-        "updates"
-    ],
-    "main"            : "Gruntfile.js",
-    "engines"         : {
-        "node": ">= 0.8.0"
-    },
-    "repository"      : {
-        "type": "git",
-        "url" : "https://github.com/pgilad/grunt-dev-update"
-    },
-    "licenses"        : [
-        {
-            "type": "MIT"
-        }
-    ],
-    "devDependencies" : {
-        "grunt-contrib-jshint"  : "~0.7.2",
-        "grunt-contrib-nodeunit": "~0.2.2",
-        "grunt-contrib-clean"   : "~0.5.0",
-        "jshint-stylish"        : "~0.1.4"
-    },
-    "dependencies"    : {
-        "matchdep": "~0.3.0",
-        "async"   : "~0.2.9",
-        "lodash"  : "~2.2.1",
-        "inquirer": "~0.3.5",
-        "progress": "~1.1.2"
-    },
-    "peerDependencies": {
-        "grunt": "~0.4.1"
-    },
-    "scripts"         : {
-        "test": "grunt test"
+  "name": "grunt-dev-update",
+  "version": "0.1.6",
+  "description": "Update your npm package.json devDependencies with a grunt task",
+  "homepage": "http://pgilad.github.io/grunt-dev-update",
+  "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
+  "author": {
+    "name": "Gilad Peleg",
+    "email": "giladp007@gmail.com"
+  },
+  "keywords": [
+    "gruntplugin",
+    "devDependencies",
+    "npm install",
+    "save-dev",
+    "automation",
+    "updates"
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pgilad/grunt-dev-update"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
     }
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-nodeunit": "~0.2.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "jshint-stylish": "~0.1.4"
+  },
+  "dependencies": {
+    "matchdep": "~0.3.0",
+    "async": "~0.2.9",
+    "lodash": "~2.2.1",
+    "inquirer": "~0.3.5",
+    "progress": "~1.1.2"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
 }
