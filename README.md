@@ -1,4 +1,4 @@
-# grunt-dev-update
+# grunt-dev-update [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 > Automatically update your npm package.json devDependencies with a grunt task
 
