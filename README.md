@@ -1,7 +1,7 @@
 # grunt-dev-update [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 > Automatically update your npm package.json devDependencies with a grunt task
 
-[![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/https://npmjs.org/package/grunt-dev-update)
+[![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![NPM](http://img.shields.io/npm/dm/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 
 ## Getting Started
