@@ -1,6 +1,6 @@
 {
   "name": "grunt-dev-update",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Update your npm package.json devDependencies with a grunt task",
   "homepage": "http://pgilad.github.io/grunt-dev-update",
   "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
