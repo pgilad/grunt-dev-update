@@ -74,17 +74,14 @@ module.exports = function(grunt) {
             //arguments to spawn to get local package version
             case 'local':
                 return ['list', dependency, '--json', '--depth=0'];
-
                 //arguments to spawn to get remote package version
             case 'remote':
                 return ['view', dependency, 'version'];
-
                 //arguments to spawn to update the package version
             case 'update':
-                grunt.verbose.writelns(exports.options.saveType);
-
                 //this will force the version to install to override locks in package.json
                 return ['install', dependency + '@' + exports.results[dependency].remoteVersion, saveType];
+                //no action detected
             default:
                 return [];
         }
@@ -298,6 +295,7 @@ module.exports = function(grunt) {
 
             //if we got here - assume we should check it, and there are packages to check
             async.series([
+
                 function(innerCb) {
                     //get local packages version
                     exports.getLocalPackageVersion(pkgObj.deps, innerCb);
