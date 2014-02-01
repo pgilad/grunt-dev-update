@@ -31,6 +31,7 @@ And then add to your grunt file:
 require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 ```
 
+
 ***
 
 ## The "devUpdate" task
@@ -77,9 +78,9 @@ Default value: `{devDependencies: true}`
 What kind of packages should be checked. Valid options:
 
 * `dependencies` - Specify true to check **production dependencies**.
-> Outdated **dependencies** are installed using the `--save` option.
+    > Outdated **dependencies** are installed using the `--save` option.
 * `devDependencies` - Specify true to check **development dependencies**. This is **true** by default.
-> Outdated **devDependencies** are installed using the `--save-dev` option.
+    > Outdated **devDependencies** are installed using the `--save-dev` option.
 
 ### Usage Examples
 
