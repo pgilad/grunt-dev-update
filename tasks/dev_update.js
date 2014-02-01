@@ -5,7 +5,8 @@
  * Licensed under the MIT license.
  */
 
-var _ = require('lodash');
+var _ = require('lodash'),
+    path = require('path');
 
 module.exports = function(grunt) {
 
@@ -46,10 +47,18 @@ module.exports = function(grunt) {
 
         var _pkgjson = devUpdate.options.packageJson;
         //use packageJson option as string, but file doesn't exist.
-        if (typeof _pkgjson === 'string' && !grunt.file.exists(_pkgjson)) {
-            grunt.fail.warn('Cannot locate package.json in supplied path ' + _pkgjson);
-            //if force
-            devUpdate.options.packageJson = null;
+        if (typeof _pkgjson === 'string') {
+            //path supplied is relative to process.cwd()
+            _pkgjson = path.resolve(process.cwd(), _pkgjson);
+
+            if (!grunt.file.exists(_pkgjson)) {
+                grunt.fail.warn('Cannot locate package.json in supplied path ' + _pkgjson);
+                //if force
+                devUpdate.options.packageJson = null;
+            } else {
+                //update option to reflect change
+                devUpdate.options.packageJson = _pkgjson;
+            }
         }
 
         //run task

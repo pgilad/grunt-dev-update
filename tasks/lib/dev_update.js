@@ -54,7 +54,7 @@ module.exports = function(grunt) {
                 dep.deps = matchDep[dep.matchdepFunc]('*', exports.options.packageJson);
             } catch (e) {
                 //couldn't get packages... critical error
-                grunt.log.verbose('Error ', e);
+                grunt.verbose.writelns('Error ', e);
                 grunt.fail.warn('Could not read from package.json', exports.options.packageJson);
                 //if force
                 dep.deps = [];

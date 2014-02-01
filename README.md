@@ -65,11 +65,9 @@ Default value: `report`
 
 How devUpdate should handle the outdated packages. Valid options:
 
-`report` - Just report that the package is outdated.
-
-`prompt` - Prompt user to confirm update of every package
-
-`force` - Automatically force the update for the outdated packages.
+* `report` - Just report that the package is outdated.
+* `prompt` - Prompt user to confirm update of every package
+* `force` - Automatically force the update for the outdated packages.
 
 #### options.packages
 Type: `Object`
@@ -84,6 +82,19 @@ What kind of packages should be checked. Valid options:
 * `devDependencies` - Specify true to check **development dependencies**. This is **true** by default.
 
     > Outdated **devDependencies** are installed using the `--save-dev` option.
+
+#### options.packageJson
+Type: `null|Object|String`
+Default value: `null`
+
+This option allow you to manully configure the path of your **package.json**. Valid options:
+
+* `null` - This will use `matchdep` own logic for finding your package.json (using `findup` to find
+nearest package.json). This is the recommended and default option.
+* `String` - specify a relative path from your **process.cwd()** to find your package.json.
+* `Object` - pass in an object representing your package.json
+
+For better understanding the `String` and `Object` option, please see [matchdep config](https://github.com/tkellen/node-matchdep#config).
 
 ### Usage Examples
 
