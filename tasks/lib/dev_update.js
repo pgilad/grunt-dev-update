@@ -10,7 +10,7 @@ var async = require('async'),
     _ = require('lodash'),
     ProgressBar = require('progress');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     var exports = {
         options: {},
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     /**
      * Get the dev dependencies packages to update from package.json
      */
-    exports.getPackages = function(depArr) {
+    exports.getPackages = function (depArr) {
         var matchDep = require('matchdep');
 
         //how is package.json located
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
             grunt.verbose.writelns('Using matchdep\'s default findup to locate nearest package.json');
         }
 
-        _.each(depArr, function(dep) {
+        _.each(depArr, function (dep) {
             if (!dep.shouldCheck) {
                 dep.deps = [];
                 return;
@@ -69,21 +69,21 @@ module.exports = function(grunt) {
      * @param {String} phase
      * @param {String} saveType should be either --save or --save-dev
      */
-    exports.getSpawnArguments = function(dependency, phase, saveType) {
+    exports.getSpawnArguments = function (dependency, phase, saveType) {
         switch (phase) {
             //arguments to spawn to get local package version
-            case 'local':
-                return ['list', dependency, '--json', '--depth=0'];
-                //arguments to spawn to get remote package version
-            case 'remote':
-                return ['view', dependency, 'version'];
-                //arguments to spawn to update the package version
-            case 'update':
-                //this will force the version to install to override locks in package.json
-                return ['install', dependency + '@' + exports.results[dependency].remoteVersion, saveType];
-                //no action detected
-            default:
-                return [];
+        case 'local':
+            return ['list', dependency, '--json', '--depth=0'];
+            //arguments to spawn to get remote package version
+        case 'remote':
+            return ['view', dependency, 'version'];
+            //arguments to spawn to update the package version
+        case 'update':
+            //this will force the version to install to override locks in package.json
+            return ['install', dependency + '@' + exports.results[dependency].remoteVersion, saveType];
+            //no action detected
+        default:
+            return [];
         }
     };
 
@@ -91,7 +91,7 @@ module.exports = function(grunt) {
      * @param {String[]} packages
      * @param {Function} done callback function
      */
-    exports.getLocalPackageVersion = function(packages, done) {
+    exports.getLocalPackageVersion = function (packages, done) {
         /** Fetching data phase **/
 
         var bar = new ProgressBar('Getting local packages versions [:bar] :percent :etas', {
@@ -99,7 +99,7 @@ module.exports = function(grunt) {
         });
 
         //loop through each pacakge
-        async.each(packages, function(dep, callback) {
+        async.each(packages, function (dep, callback) {
             //make current task arguments
 
             bar.tick();
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
             //get local spawn args
             exports.spawnOptions.args = exports.getSpawnArguments(dep, 'local');
             exports.results[dep] = {};
-            grunt.util.spawn(exports.spawnOptions, function(error, result) {
+            grunt.util.spawn(exports.spawnOptions, function (error, result) {
                 if (error) {
                     grunt.verbose.writelns(error);
                     exports.results[dep].isError = true;
@@ -141,20 +141,20 @@ module.exports = function(grunt) {
      * @param {String[]} packages
      * @param {Function} done callback function
      */
-    exports.getRemotePackageVersion = function(packages, done) {
+    exports.getRemotePackageVersion = function (packages, done) {
 
         var bar = new ProgressBar('Getting remote packages versions [:bar] :percent :etas', {
             total: packages.length
         });
 
         /** Fetching data phase **/
-        async.each(packages, function(dep, callback) {
+        async.each(packages, function (dep, callback) {
 
             bar.tick();
             //make current task arguments
             exports.spawnOptions.args = exports.getSpawnArguments(dep, 'remote');
 
-            grunt.util.spawn(exports.spawnOptions, function(error, result) {
+            grunt.util.spawn(exports.spawnOptions, function (error, result) {
                 if (error) {
                     grunt.verbose.writelns(error);
                     exports.results[dep].isError = true;
@@ -185,9 +185,9 @@ module.exports = function(grunt) {
      * @param {String} saveType
      * @param {Function} done callback function
      */
-    exports.processByUpdateType = function(packages, saveType, done) {
+    exports.processByUpdateType = function (packages, saveType, done) {
         /** Update phase **/
-        async.eachSeries(packages, function(dep, callback) {
+        async.eachSeries(packages, function (dep, callback) {
             var currentDep = exports.results[dep];
 
             //package is updated
@@ -214,7 +214,7 @@ module.exports = function(grunt) {
                     name: 'confirm',
                     message: msg,
                     type: 'confirm'
-                }, function(result) {
+                }, function (result) {
                     if (result.confirm) {
                         return exports.updatePackage(dep, saveType, callback);
                     }
@@ -239,14 +239,14 @@ module.exports = function(grunt) {
      * @param {String} saveType
      * @param {Function} done callback function
      */
-    exports.updatePackage = function(dep, saveType, done) {
+    exports.updatePackage = function (dep, saveType, done) {
         //assign args
         exports.spawnOptions.args = exports.getSpawnArguments(dep, 'update', saveType);
         exports.spawnOptions.opts = {
             stdio: 'inherit'
         };
 
-        grunt.util.spawn(exports.spawnOptions, function(error) {
+        grunt.util.spawn(exports.spawnOptions, function (error) {
             if (error) {
                 grunt.verbose.writelns(error);
                 grunt.log.writelns('Error while updating package ' + dep);
@@ -258,7 +258,7 @@ module.exports = function(grunt) {
         });
     };
 
-    exports.runTask = function(done) {
+    exports.runTask = function (done) {
         var devDeps, prodDeps;
 
         devDeps = {
@@ -279,7 +279,7 @@ module.exports = function(grunt) {
         exports.getPackages([devDeps, prodDeps]);
 
         //go through each package type
-        async.eachSeries([devDeps, prodDeps], function(pkgObj, callback) {
+        async.eachSeries([devDeps, prodDeps], function (pkgObj, callback) {
             //user hasn't enabled this package check
             if (!pkgObj.shouldCheck) {
                 return callback();
@@ -296,17 +296,17 @@ module.exports = function(grunt) {
             //if we got here - assume we should check it, and there are packages to check
             async.series([
 
-                function(innerCb) {
+                function (innerCb) {
                     //get local packages version
                     exports.getLocalPackageVersion(pkgObj.deps, innerCb);
                 },
-                function(innerCb) {
+                function (innerCb) {
                     exports.getRemotePackageVersion(pkgObj.deps, innerCb);
                 },
-                function(innerCb) {
+                function (innerCb) {
                     exports.processByUpdateType(pkgObj.deps, pkgObj.saveType, innerCb);
                 }
-            ], function(err) {
+            ], function (err) {
                 if (err) {
                     grunt.fail.fatal('Task failed due to ', err);
                 }

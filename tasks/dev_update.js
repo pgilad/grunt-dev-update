@@ -8,12 +8,12 @@
 var _ = require('lodash'),
     path = require('path');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     var devUpdate = require('./lib/dev_update')(grunt);
     var possibleUpdateTypes = ['report', 'force', 'prompt'];
 
-    grunt.registerMultiTask('devUpdate', 'See your outdated devDependencies and update them', function() {
+    grunt.registerMultiTask('devUpdate', 'See your outdated devDependencies and update them', function () {
 
         //set default options
         devUpdate.options = this.options({
