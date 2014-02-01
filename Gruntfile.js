@@ -1,18 +1,16 @@
 /*
  * grunt-dev-update
- * 
  *
- * Copyright (c) 2013 Gilad Peleg
+ * Copyright (c) 2014 Gilad Peleg
  * Licensed under the MIT license.
  */
-'use strict';
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
     // Project configuration.
     grunt.initConfig({
-        jshint  : {
-            all    : [
+        jshint: {
+            all: [
                 'Gruntfile.js',
                 'tasks/*.js',
                 '<%= nodeunit.tests %>'
@@ -24,7 +22,7 @@ module.exports = function (grunt) {
         },
 
         // Before generating any new files, remove any previously-created files.
-        clean   : {
+        clean: {
             tests: ['tmp']
         },
 
@@ -36,10 +34,18 @@ module.exports = function (grunt) {
         devUpdate: {
             main: {
                 options: {
-                    //should task report already updated dependencies
+                    //just report
+                    updateType: 'report',
+                    //don't report ok packages by default
                     reportUpdated: false,
-                    //can be force|report|prompt
-                    updateType   : "prompt" //could be force|report|prompt
+                    //what packages to check
+                    packages: {
+                        //only devDependencies by default
+                        devDependencies: true,
+                        dependencies: false
+                    },
+                    //by deafult - use matchdep default findup to locate package.json
+                    packageJson: null
                 }
             }
         }

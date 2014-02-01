@@ -34,18 +34,17 @@ require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 ## The "devUpdate" task
 
 ### Overview
-In your project's Gruntfile, add a section named `devUpdate` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a task config named `devUpdate` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  devUpdate: {
-
-    your_target: {
-        options: {
-          // Target specific options go here
+    devUpdate: {
+        your_target: {
+            options: {
+            // Target specific options go here
+            }
         }
     }
-  }
 })
 ```
 
@@ -69,23 +68,44 @@ How devUpdate should handle the outdated packages. Valid options:
 
 `force` - Automatically force the update for the outdated packages.
 
+#### options.packages
+Type: `Object`
+Default value: `{devDependencies: true}`
+
+What kind of packages should be checked. Valid options:
+
+`dependencies` - Specify true to check **production dependencies**.
+`devDependencies` - Specify true to check **development dependencies**. This is **true** by default.
+
+Outdated **dependencies** are installed using the `--save` option.
+
+Outdated **devDependencies** are installed using the `--save-dev` option.
+
 ### Usage Examples
 
 #### Default Options
-This is a basic usage for devUpdate:
+These is a usage with all the options, specifying the defaults:
 
 ```js
 grunt.initConfig({
-  devUpdate: {
-    main: {
-        options: {
-            //should task report already updated dependencies
-            reportUpdated: false,
-            //can be 'force'|'report'|'prompt'
-            updateType   : "report"
+    devUpdate: {
+        main: {
+            options: {
+                //just report
+                updateType: 'report',
+                //don't report ok packages by default
+                reportUpdated: false,
+                //what packages to check
+                packages: {
+                    //only devDependencies by default
+                    devDependencies: true,
+                    dependencies: false
+                },
+                //by deafult - use matchdep default findup to locate package.json
+                packageJson: null
+            }
         }
     }
-  }
 })
 ```
 
