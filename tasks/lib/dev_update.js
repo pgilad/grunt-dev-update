@@ -215,6 +215,7 @@ module.exports = function (grunt) {
                 inquirer.prompt({
                     name: 'confirm',
                     message: msg,
+                    default: false,
                     type: 'confirm'
                 }, function (result) {
                     if (result.confirm) {
@@ -222,12 +223,15 @@ module.exports = function (grunt) {
                     }
                     callback();
                 });
+
+                return;
             }
 
             //force package update
             if (exports.options.updateType === 'force') {
                 //update without asking user
                 exports.updatePackage(dep, saveType, callback);
+                return;
             }
 
             //bad option?
