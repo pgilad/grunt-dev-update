@@ -1,52 +1,54 @@
 {
-    "name": "grunt-dev-update",
-    "version": "0.4.4",
-    "description": "Automate the updating of your package.json packages with a grunt task",
-    "homepage": "http://pgilad.github.io/grunt-dev-update",
-    "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
-    "author": {
-        "name": "Gilad Peleg",
-        "email": "giladp007@gmail.com"
-    },
-    "keywords": [
-        "gruntplugin",
-        "devDependencies",
-        "dependencies",
-        "install",
-        "save-dev",
-        "save",
-        "automation",
-        "updates"
-    ],
-    "main": "Gruntfile.js",
-    "engines": {
-        "node": ">= 0.8.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/pgilad/grunt-dev-update"
-    },
-    "licenses": [{
-        "type": "MIT"
-    }],
-    "devDependencies": {
-        "grunt-contrib-jshint": "~0.8.0",
-        "grunt-contrib-nodeunit": "~0.3.0",
-        "grunt-contrib-clean": "~0.5.0",
-        "jshint-stylish": "~0.1.5"
-    },
-    "dependencies": {
-        "matchdep": "~0.3.0",
-        "async": "~0.2.10",
-        "lodash": "~2.4.1",
-        "inquirer": "~0.4.0",
-        "findup-sync": "~0.1.2",
-        "progress": "~1.1.3"
-    },
-    "peerDependencies": {
-        "grunt": "~0.4.1"
-    },
-    "scripts": {
-        "test": "grunt test"
+  "name": "grunt-dev-update",
+  "version": "0.4.5",
+  "description": "Automate the updating of your package.json packages with a grunt task",
+  "homepage": "http://pgilad.github.io/grunt-dev-update",
+  "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
+  "author": {
+    "name": "Gilad Peleg",
+    "email": "giladp007@gmail.com"
+  },
+  "keywords": [
+    "gruntplugin",
+    "devDependencies",
+    "dependencies",
+    "install",
+    "save-dev",
+    "save",
+    "automation",
+    "updates"
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pgilad/grunt-dev-update"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
     }
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-nodeunit": "~0.3.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "jshint-stylish": "~0.1.5"
+  },
+  "dependencies": {
+    "matchdep": "~0.3.0",
+    "async": "~0.2.10",
+    "lodash": "~2.4.1",
+    "inquirer": "~0.4.0",
+    "findup-sync": "~0.1.2",
+    "progress": "~1.1.3"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
 }
