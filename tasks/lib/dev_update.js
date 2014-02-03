@@ -8,6 +8,7 @@
 var async = require('async'),
     inquirer = require('inquirer'),
     _ = require('lodash'),
+    findup = require('findup-sync'),
     ProgressBar = require('progress');
 
 module.exports = function (grunt) {
@@ -41,6 +42,7 @@ module.exports = function (grunt) {
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
         } else {
+            exports.options.packageJson = findup('package.json', {cwd:process.cwd()});
             grunt.verbose.writelns('Using matchdep\'s default findup to locate nearest package.json');
         }
 
