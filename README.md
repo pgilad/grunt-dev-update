@@ -1,10 +1,12 @@
-# grunt-dev-update
+# [grunt](http://gruntjs.com/)-dev-update
 > Automate the updating of your package.json packages with a grunt task
 
 [![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![NPM](http://img.shields.io/npm/dm/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)
+[![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg)](https://gemnasium.com/pgilad/grunt-dev-update)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+
 
 ## Getting Started
 This plugin requires Grunt.
@@ -99,7 +101,7 @@ For better understanding the `String` and `Object` option, please see [matchdep 
 ### Usage Examples
 
 #### Default Options
-These is a usage with all the options, specifying the defaults:
+Example usage with all options specified with defaults:
 
 ```js
 grunt.initConfig({
@@ -126,8 +128,6 @@ grunt.initConfig({
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
 
 ## License
 Copyright (c) 2014 Gilad Peleg. Licensed under the MIT license.
