@@ -36,32 +36,38 @@ module.exports = function (grunt) {
      * Get the dev dependencies packages to update from package.json
      */
     exports.getPackages = function (depArr) {
-        var matchDep = require('matchdep');
-
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
         } else {
-            exports.options.packageJson = findup('package.json', {cwd:process.cwd()});
+            exports.options.packageJson = findup('package.json', {
+                cwd: process.cwd()
+            });
             grunt.verbose.writelns('Using matchdep\'s default findup to locate nearest package.json');
+        }
+
+        try {
+            //load package json
+            var pkg = require(exports.options.packageJson);
+        } catch (e) {
+            //couldn't get packages... critical error
+            grunt.verbose.writelns('Error ', e);
+            grunt.fail.fatal('Could not read from package.json', exports.options.packageJson);
         }
 
         _.each(depArr, function (dep) {
             if (!dep.shouldCheck) {
-                dep.deps = [];
                 return;
             }
 
-            try {
-                dep.deps = matchDep[dep.matchdepFunc]('*', exports.options.packageJson);
-            } catch (e) {
-                //couldn't get packages... critical error
-                grunt.verbose.writelns('Error ', e);
-                grunt.fail.warn('Could not read from package.json', exports.options.packageJson);
-                //if force
-                dep.deps = [];
+            dep.deps = pkg[dep.type];
+
+            //no packages found
+            if (!_.keys(dep.deps).length) {
+                dep.shouldCheck = false;
+                return;
             }
-            grunt.log.writeln('Found ' + dep.deps.length + ' ' + dep.type.blue + ' to check for latest version');
+            grunt.log.writeln('Found ' + _.keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
         });
     };
 
@@ -95,17 +101,14 @@ module.exports = function (grunt) {
      */
     exports.getLocalPackageVersion = function (packages, done) {
         /** Fetching data phase **/
+        var localPackages = _.keys(packages);
 
         var bar = new ProgressBar('Getting local packages versions [:bar] :percent :etas', {
-            total: packages.length
+            total: localPackages.length
         });
 
         //loop through each pacakge
-        async.each(packages, function (dep, callback) {
-            //make current task arguments
-
-            bar.tick();
-
+        async.each(localPackages, function (dep, callback) {
             //get local spawn args
             exports.spawnOptions.args = exports.getSpawnArguments(dep, 'local');
             exports.results[dep] = {};
@@ -114,6 +117,7 @@ module.exports = function (grunt) {
                     grunt.verbose.writelns(error);
                     exports.results[dep].isError = true;
                     grunt.log.writelns('Error in getting local package version of ' + dep);
+                    bar.tick();
                     return callback();
                 }
 
@@ -125,6 +129,7 @@ module.exports = function (grunt) {
                     grunt.verbose.writelns(e);
                     exports.results[dep].isError = true;
                     grunt.log.writelns('Error in JSON.parse of the local package info of ' + dep);
+                    bar.tick();
                     return callback();
                 }
 
@@ -134,7 +139,8 @@ module.exports = function (grunt) {
 
                 //success
                 grunt.verbose.writelns('Got local version for package %s -> %s', dep, exports.results[dep].localVersion);
-                callback();
+                bar.tick();
+                return callback();
             });
         }, done);
     };
@@ -144,15 +150,15 @@ module.exports = function (grunt) {
      * @param {Function} done callback function
      */
     exports.getRemotePackageVersion = function (packages, done) {
+        var remotePackages = _.keys(packages);
 
         var bar = new ProgressBar('Getting remote packages versions [:bar] :percent :etas', {
-            total: packages.length
+            total: remotePackages.length
         });
 
         /** Fetching data phase **/
-        async.each(packages, function (dep, callback) {
+        async.each(remotePackages, function (dep, callback) {
 
-            bar.tick();
             //make current task arguments
             exports.spawnOptions.args = exports.getSpawnArguments(dep, 'remote');
 
@@ -161,6 +167,7 @@ module.exports = function (grunt) {
                     grunt.verbose.writelns(error);
                     exports.results[dep].isError = true;
                     grunt.log.writelns('Error in getting remote package version of ' + dep);
+                    bar.tick();
                     return callback();
                 }
                 grunt.verbose.writelns('Got remote version for package %s -> %s', dep, result.stdout);
@@ -176,7 +183,8 @@ module.exports = function (grunt) {
                     ++exports.stats.outdated;
                 }
 
-                callback();
+                bar.tick();
+                return callback();
             });
         }, done);
     };
@@ -189,7 +197,9 @@ module.exports = function (grunt) {
      */
     exports.processByUpdateType = function (packages, saveType, done) {
         /** Update phase **/
-        async.eachSeries(packages, function (dep, callback) {
+        var curPackages = _.keys(packages);
+
+        async.eachSeries(curPackages, function (dep, callback) {
             var currentDep = exports.results[dep];
 
             //package is updated
@@ -221,7 +231,7 @@ module.exports = function (grunt) {
                     if (result.confirm) {
                         return exports.updatePackage(dep, saveType, callback);
                     }
-                    callback();
+                    return callback();
                 });
 
                 return;
@@ -230,8 +240,7 @@ module.exports = function (grunt) {
             //force package update
             if (exports.options.updateType === 'force') {
                 //update without asking user
-                exports.updatePackage(dep, saveType, callback);
-                return;
+                return exports.updatePackage(dep, saveType, callback);
             }
 
             //bad option?
@@ -284,22 +293,16 @@ module.exports = function (grunt) {
         //get the production and/or dev dependencies using matchdep
         exports.getPackages([devDeps, prodDeps]);
 
+        var toCheckArr = _.filter([devDeps, prodDeps], _.property('shouldCheck'));
+
+        //no pacakges to check
+        if (!toCheckArr || !toCheckArr.length) {
+            return done();
+        }
+
         //go through each package type
-        async.eachSeries([devDeps, prodDeps], function (pkgObj, callback) {
-            //user hasn't enabled this package check
-            if (!pkgObj.shouldCheck) {
-                return callback();
-            }
-
-            //there are no packages to check
-            if (!pkgObj.deps.length) {
-                grunt.log.oklns('Found 0 %s packages', pkgObj.type);
-                return callback();
-            }
-
+        async.eachSeries(toCheckArr, function (pkgObj, callback) {
             grunt.log.subhead('Going through ' + pkgObj.type.blue + ' packages');
-
-            //if we got here - assume we should check it, and there are packages to check
             async.series([
 
                 function (innerCb) {
@@ -317,7 +320,9 @@ module.exports = function (grunt) {
                     grunt.fail.fatal('Task failed due to ', err);
                 }
 
-                grunt.log.oklns('Found ' + pkgObj.deps.length + ' ' + pkgObj.type.blue + '. ' +
+                var totalPkgs = _.keys(pkgObj.deps).length;
+
+                grunt.log.oklns('Found ' + totalPkgs + ' ' + pkgObj.type.blue + '. ' +
                     exports.stats.upToDate + ' up-to-date. ' + (exports.stats.outdated + ' outdated').cyan);
 
                 //TODO keep results seperately

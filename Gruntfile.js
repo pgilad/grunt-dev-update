@@ -5,7 +5,7 @@
  * Licensed under the MIT license.
  */
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
             main: {
                 options: {
                     //just report
-                    updateType: 'report',
+                    updateType: 'prompt',
                     //don't report ok packages by default
                     reportUpdated: false,
                     //what packages to check
