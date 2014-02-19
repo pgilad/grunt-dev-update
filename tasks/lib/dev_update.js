@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     /**
      * Get the dev dependencies packages to update from package.json
      */
-    exports.getPackages = function (depArr) {
+    var getPackages = function (depArr) {
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
      * @param {String} phase
      * @param {String} saveType should be either --save or --save-dev
      */
-    exports.getSpawnArguments = function (dependency, phase, saveType) {
+    var getSpawnArguments = function (dependency, phase, saveType) {
         switch (phase) {
             //arguments to spawn to get local package version
         case 'local':
@@ -99,7 +99,7 @@ module.exports = function (grunt) {
      * @param {String[]} packages
      * @param {Function} done callback function
      */
-    exports.getLocalPackageVersion = function (packages, done) {
+    var getLocalPackageVersion = function (packages, done) {
         /** Fetching data phase **/
         var localPackages = _.keys(packages);
 
@@ -110,7 +110,7 @@ module.exports = function (grunt) {
         //loop through each pacakge
         async.each(localPackages, function (dep, callback) {
             //get local spawn args
-            exports.spawnOptions.args = exports.getSpawnArguments(dep, 'local');
+            exports.spawnOptions.args = getSpawnArguments(dep, 'local');
             exports.results[dep] = {};
             grunt.util.spawn(exports.spawnOptions, function (error, result) {
                 if (error) {
@@ -149,7 +149,7 @@ module.exports = function (grunt) {
      * @param {String[]} packages
      * @param {Function} done callback function
      */
-    exports.getRemotePackageVersion = function (packages, done) {
+    var getRemotePackageVersion = function (packages, done) {
         var remotePackages = _.keys(packages);
 
         var bar = new ProgressBar('Getting remote packages versions [:bar] :percent :etas', {
@@ -160,7 +160,7 @@ module.exports = function (grunt) {
         async.each(remotePackages, function (dep, callback) {
 
             //make current task arguments
-            exports.spawnOptions.args = exports.getSpawnArguments(dep, 'remote');
+            exports.spawnOptions.args = getSpawnArguments(dep, 'remote');
 
             grunt.util.spawn(exports.spawnOptions, function (error, result) {
                 if (error) {
@@ -195,7 +195,7 @@ module.exports = function (grunt) {
      * @param {String} saveType
      * @param {Function} done callback function
      */
-    exports.processByUpdateType = function (packages, saveType, done) {
+    var processByUpdateType = function (packages, saveType, done) {
         /** Update phase **/
         var curPackages = _.keys(packages);
 
@@ -221,7 +221,7 @@ module.exports = function (grunt) {
             //prompt user if package should be updated
             if (exports.options.updateType === 'prompt') {
                 //prompt to update
-                var msg = 'update using [npm ' + exports.getSpawnArguments(dep, 'update', saveType).join(' ') + ']';
+                var msg = 'update using [npm ' + getSpawnArguments(dep, 'update', saveType).join(' ') + ']';
                 inquirer.prompt({
                     name: 'confirm',
                     message: msg,
@@ -256,7 +256,7 @@ module.exports = function (grunt) {
      */
     exports.updatePackage = function (dep, saveType, done) {
         //assign args
-        exports.spawnOptions.args = exports.getSpawnArguments(dep, 'update', saveType);
+        exports.spawnOptions.args = getSpawnArguments(dep, 'update', saveType);
         exports.spawnOptions.opts = {
             stdio: 'inherit'
         };
@@ -291,7 +291,7 @@ module.exports = function (grunt) {
         };
 
         //get the production and/or dev dependencies using matchdep
-        exports.getPackages([devDeps, prodDeps]);
+        getPackages([devDeps, prodDeps]);
 
         var toCheckArr = _.filter([devDeps, prodDeps], _.property('shouldCheck'));
 
@@ -307,13 +307,13 @@ module.exports = function (grunt) {
 
                 function (innerCb) {
                     //get local packages version
-                    exports.getLocalPackageVersion(pkgObj.deps, innerCb);
+                    getLocalPackageVersion(pkgObj.deps, innerCb);
                 },
                 function (innerCb) {
-                    exports.getRemotePackageVersion(pkgObj.deps, innerCb);
+                    getRemotePackageVersion(pkgObj.deps, innerCb);
                 },
                 function (innerCb) {
-                    exports.processByUpdateType(pkgObj.deps, pkgObj.saveType, innerCb);
+                    processByUpdateType(pkgObj.deps, pkgObj.saveType, innerCb);
                 }
             ], function (err) {
                 if (err) {
