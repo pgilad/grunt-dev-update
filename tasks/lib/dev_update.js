@@ -151,7 +151,6 @@ module.exports = function (grunt) {
      */
     var getRemotePackageVersion = function (packages, done) {
         var remotePackages = _.keys(packages);
-
         var bar = new ProgressBar('Getting remote packages versions [:bar] :percent :etas', {
             total: remotePackages.length
         });
