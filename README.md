@@ -2,7 +2,6 @@
 > Automate the updating of your package.json packages with a grunt task
 
 [![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
-[![NPM](http://img.shields.io/npm/dm/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)
 [![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg)](https://gemnasium.com/pgilad/grunt-dev-update)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
