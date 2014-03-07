@@ -1,11 +1,10 @@
 # [grunt](http://gruntjs.com/)-dev-update
-> Automate the updating of your package.json packages with a grunt task
+> Update your devDependencies and dependencies automatically with a grunt task 
 
 [![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)
 [![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg)](https://gemnasium.com/pgilad/grunt-dev-update)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
-
 
 ## Getting Started
 This plugin requires Grunt.
@@ -39,8 +38,10 @@ require('load-grunt-tasks')(grunt);
 
 #### This plugin allows you to both update your dependencies and devDependencies with an automated task.
 
-1. You control if you want to just be notified of outdated packages, be prompted for updates or always update.
-2. Also you can control whether to stay inside your `package.json` semver matching, or alwasy update to latest
+1. See outdated packages
+2. Choose whether to just get notified, update them with a prompt, or automatically update them.
+3. Determine whether to stay with semver rules when updating, or to update to latest version.
+4. Update either or both your devDependencies and dependencies
 
 *Q: Why not use `npm update` or `npm install`?*
 
@@ -128,18 +129,14 @@ grunt.initConfig({
     devUpdate: {
         main: {
             options: {
-                //just report
-                updateType: 'report',
-                //don't report ok packages by default
-                reportUpdated: false,
-                //what packages to check
-                packages: {
-                    //only devDependencies by default
-                    devDependencies: true,
+                updateType: 'report', //just report outdated packages
+                reportUpdated: false, //don't report already updated packages
+                semver: true, //use package.json semver rules when updating
+                packages: { //what packages to check
+                    devDependencies: true, //only devDependencies
                     dependencies: false
                 },
-                //by deafult - use matchdep default findup to locate package.json
-                packageJson: null
+                packageJson: null //find package.json automatically
             }
         }
     }
