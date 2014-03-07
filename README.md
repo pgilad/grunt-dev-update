@@ -22,20 +22,30 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-dev-update');
 ```
 
-An alternative and highly recommended way to load all grunt npm tasks is installing `matchdep`:
-```js
+The best way to load tasks is probably using [load-grunt-tasks](https://github.com/sindresorhus/load-grunt-tasks)
+
+```bash
 npm install matchdep --save-dev
 ```
 
 And then add to your grunt file:
 ```js
-require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+require('load-grunt-tasks')(grunt);
 ```
-
 
 ***
 
 ## The "devUpdate" task
+
+#### This plugin allows you to both update your dependencies and devDependencies with an automated task.
+
+1. You control if you want to just be notified of outdated packages, be prompted for updates or always update.
+2. Also you can control whether to stay inside your `package.json` semver matching, or alwasy update to latest
+
+*Q: Why not use `npm update` or `npm install`?*
+
+**A: First, npm update doesn't work on dev dependencies. Second, npm update stays inside your semver matching in your package.json,
+thirdly - npm isn't automated like your grunt tasks.**
 
 ### Overview
 In your project's Gruntfile, add a task config named `devUpdate` to the data object passed into `grunt.initConfig()`.
@@ -83,6 +93,17 @@ What kind of packages should be checked. Valid options:
 * `devDependencies` - Specify true to check **development dependencies**. This is **true** by default.
 
     > Outdated **devDependencies** are installed using the `--save-dev` option.
+
+#### options.semver
+Type: `Boolean`
+Default value: `true`
+
+If true or undefined, packages will be updated with `npm update` and will be installed up to your allowed version in
+your `package.json`. Your allowed version is determined using [semver](http://semver.org).
+
+If false your packages will be updated to the latest version there is, regardless of your `package.json` specifications.
+
+**Warning** - this could break packages and only use this option if you're sure of what you're doing.
 
 #### options.packageJson
 Type: `null|Object|String`

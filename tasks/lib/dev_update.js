@@ -59,6 +59,7 @@ module.exports = function (grunt) {
             return _.map(dep.deps, function (item, key) {
                 return {
                     name: key,
+                    installType: dep.installType,
                     type: dep.type
                 };
             });
@@ -78,15 +79,11 @@ module.exports = function (grunt) {
         case 'outdated':
             return ['outdated', '--json', '--depth=0'];
             //arguments to spawn to get local package version
-        case 'local':
-            return ['list', dependency, '--json', '--depth=0'];
-            //arguments to spawn to get remote package version
-        case 'remote':
-            return ['view', dependency, 'version'];
-            //arguments to spawn to update the package version
         case 'update':
+            return ['update', dependency];
+        case 'install':
             //this will force the version to install to override locks in package.json
-            return ['install', dependency + '@' + exports.results[dependency].remoteVersion, saveType];
+            return ['install', dependency + '@latest', saveType];
             //no action detected
         default:
             return [];
@@ -112,31 +109,21 @@ module.exports = function (grunt) {
         });
     };
 
-    /**
-     * Process a package according to option updateType
-     * @param {String[]} packages
-     * @param {String} saveType
-     * @param {Function} done callback function
-     */
-    var processByUpdateType = function (packageInfo, packages, done) {
+    var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
-        //log about out of date package
-        //
-        //
-        console.log('Filename: dev_update.js', 'Line: 126', 'package, options:',  packageInfo, packages);
-        return done();
-        grunt.log.subhead('package %s is outdated.\nLocal version: %s, Latest version %s',
-            dep, exports.results[dep].localVersion, exports.results[dep].remoteVersion);
+        grunt.log.subhead('Package:%s, Package type: %s, Current version: %s, Wanted: %s, Latest: %s', pkg.name, specs.current, specs.wanted, specs.latest);
 
         //only report outdated, do nothing
         if (exports.options.updateType === 'report') {
-            return callback();
+            return done();
         }
+        var updateType = exports.options.semver ? 'update' : 'install';
+        var spawnArgs = getSpawnArguments(pkg.name, updateType, pkg.installType);
 
         //prompt user if package should be updated
         if (exports.options.updateType === 'prompt') {
             //prompt to update
-            var msg = 'update using [npm ' + getSpawnArguments(dep, 'update', saveType).join(' ') + ']';
+            var msg = 'update using [npm ' + spawnArgs.join(' ') + ']';
             inquirer.prompt({
                 name: 'confirm',
                 message: msg,
@@ -144,38 +131,31 @@ module.exports = function (grunt) {
                 type: 'confirm'
             }, function (result) {
                 if (result.confirm) {
-                    return exports.updatePackage(dep, saveType, done);
+                    return exports.updatePackage(spawnArgs, done);
                 }
-                return callback();
+                return done();
             });
             return;
         }
         //force package update
         if (exports.options.updateType === 'force') {
             //update without asking user
-            return exports.updatePackage(dep, saveType, done);
+            return exports.updatePackage(spawnArgs, done);
         }
     };
 
-    /**
-     * Update a package using npm install %package% %saveType%
-     * @param {String} dep
-     * @param {String} saveType
-     * @param {Function} done callback function
-     */
-    exports.updatePackage = function (dep, saveType, done) {
+    exports.updatePackage = function (spawnArgs, done) {
         //assign args
-        spawnOptions.args = getSpawnArguments(dep, 'update', saveType);
+        spawnOptions.args = spawnArgs;
         spawnOptions.opts = {
             stdio: 'inherit'
         };
         grunt.util.spawn(spawnOptions, function (error) {
             if (error) {
                 grunt.verbose.writelns(error);
-                grunt.log.writelns('Error while updating package ' + dep);
+                grunt.log.writelns('Error while running ' + spawnArgs);
                 return done();
             }
-            grunt.log.oklns('Successfully updated package ' + dep);
             return done();
         });
     };
@@ -208,8 +188,12 @@ module.exports = function (grunt) {
 
         getOutdatedPkgs(packages, function (err, result) {
             var outdated = _.keys(result);
-            async.each(outdated, function (item, cb) {
-                return processByUpdateType(result[item], packages, cb);
+            async.each(outdated, function (pkgName, cb) {
+                var pkg = _.findWhere(packages, {
+                    name: pkgName
+                });
+                var specs = result[pkgName];
+                return processByUpdateType(pkg, specs, cb);
             }, done);
         });
     };

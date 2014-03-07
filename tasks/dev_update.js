@@ -21,6 +21,7 @@ module.exports = function (grunt) {
             updateType: 'report',
             //don't report ok packages by default
             reportUpdated: false,
+            semver: false,
             //what packages to check
             packages: {
                 //only devDependencies by default

@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                     packages: {
                         //only devDependencies by default
                         devDependencies: true,
-                        dependencies: false
+                        dependencies: true
                     },
                     //by deafult - use matchdep default findup to locate package.json
                     packageJson: null
