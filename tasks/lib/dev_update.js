@@ -111,7 +111,8 @@ module.exports = function (grunt) {
 
     var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
-        grunt.log.subhead('Package:%s, Package type: %s, Current version: %s, Wanted: %s, Latest: %s', pkg.name, specs.current, specs.wanted, specs.latest);
+        grunt.log.subhead('Package:%s, Package type: %s, Current version: %s, Wanted: %s, Latest: %s',
+            pkg.name, specs.current, specs.wanted, specs.latest);
 
         //only report outdated, do nothing
         if (exports.options.updateType === 'report') {
@@ -124,7 +125,7 @@ module.exports = function (grunt) {
         if (exports.options.updateType === 'prompt') {
             //prompt to update
             var msg = 'update using [npm ' + spawnArgs.join(' ') + ']';
-            inquirer.prompt({
+            return inquirer.prompt({
                 name: 'confirm',
                 message: msg,
                 default: false,
@@ -135,7 +136,6 @@ module.exports = function (grunt) {
                 }
                 return done();
             });
-            return;
         }
         //force package update
         if (exports.options.updateType === 'force') {
