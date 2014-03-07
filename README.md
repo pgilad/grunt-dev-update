@@ -12,7 +12,7 @@ This plugin requires Grunt.
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
-```shell
+```bash
 npm install grunt-dev-update --save-dev
 ```
 
@@ -25,10 +25,10 @@ grunt.loadNpmTasks('grunt-dev-update');
 The best way to load tasks is probably using [load-grunt-tasks](https://github.com/sindresorhus/load-grunt-tasks)
 
 ```bash
-npm install matchdep --save-dev
+npm i load-grunt-tasks -D
 ```
 
-And then add to your grunt file:
+And then add to your gruntfile.js:
 ```js
 require('load-grunt-tasks')(grunt);
 ```
