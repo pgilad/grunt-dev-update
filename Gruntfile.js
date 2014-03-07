@@ -52,7 +52,7 @@ module.exports = function (grunt) {
     });
 
     // load all npm grunt tasks
-    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+    require('load-grunt-tasks')(grunt);
 
     // Actually load this plugin's task(s).
     grunt.loadTasks('tasks');
