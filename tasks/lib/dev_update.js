@@ -111,8 +111,8 @@ module.exports = function (grunt) {
 
     var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
-        grunt.log.subhead('Package:%s, Package type: %s, Current version: %s, Wanted: %s, Latest: %s',
-            pkg.name, specs.current, specs.wanted, specs.latest);
+        grunt.log.subhead('Package: %s\n  Package type: %s\n  Current version: %s\n  Wanted: %s\n  Latest: %s',
+            pkg.name, pkg.type, specs.current, specs.wanted, specs.latest);
 
         //only report outdated, do nothing
         if (exports.options.updateType === 'report') {
