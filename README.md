@@ -1,5 +1,5 @@
 # [grunt](http://gruntjs.com/)-dev-update
-> Update your devDependencies and dependencies automatically with a grunt task 
+> Update your devDependencies and dependencies automatically with a grunt task
 
 [![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
 [![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)

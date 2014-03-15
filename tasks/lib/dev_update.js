@@ -14,9 +14,6 @@ module.exports = function (grunt) {
 
     var exports = {
         options: {},
-        devDeps: [],
-        prodDeps: [],
-        results: {}
     };
 
     //default spawn options
@@ -24,11 +21,6 @@ module.exports = function (grunt) {
         cmd: 'npm',
         grunt: false,
         opts: {}
-    };
-
-    exports.stats = {
-        outdated: 0,
-        upToDate: 0
     };
 
     /**
@@ -111,8 +103,11 @@ module.exports = function (grunt) {
 
     var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
-        grunt.log.subhead('Package: %s\n  Package type: %s\n  Current version: %s\n  Wanted: %s\n  Latest: %s',
-            pkg.name, pkg.type, specs.current, specs.wanted, specs.latest);
+        grunt.log.subhead('Package name\t: %s', pkg.name);
+        grunt.log.writelns('Package type\t: %s', pkg.type);
+        grunt.log.writelns('Current version\t: %s', specs.current.green);
+        grunt.log.writelns('Wanted version\t: %s', specs.wanted);
+        grunt.log.writelns('Latest version\t: %s', specs.latest.red);
 
         //only report outdated, do nothing
         if (exports.options.updateType === 'report') {
@@ -132,9 +127,11 @@ module.exports = function (grunt) {
                 type: 'confirm'
             }, function (result) {
                 if (result.confirm) {
+                    //user accepted update
                     return exports.updatePackage(spawnArgs, done);
+                } else {
+                    return done();
                 }
-                return done();
             });
         }
         //force package update
@@ -142,6 +139,9 @@ module.exports = function (grunt) {
             //update without asking user
             return exports.updatePackage(spawnArgs, done);
         }
+
+        //shouldn't get here but just in case
+        return done();
     };
 
     exports.updatePackage = function (spawnArgs, done) {
@@ -188,7 +188,7 @@ module.exports = function (grunt) {
 
         getOutdatedPkgs(packages, function (err, result) {
             var outdated = _.keys(result);
-            async.each(outdated, function (pkgName, cb) {
+            async.eachSeries(outdated, function (pkgName, cb) {
                 var pkg = _.findWhere(packages, {
                     name: pkgName
                 });
