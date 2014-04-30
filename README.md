@@ -1,9 +1,9 @@
 # [grunt](http://gruntjs.com/)-dev-update
 > Update your devDependencies and dependencies automatically with a grunt task
 
-[![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
-[![NPM Downloads](http://img.shields.io/npm/dm/grunt-dev-update.svg)](https://npmjs.org/package/grunt-dev-update)
-[![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg)](https://gemnasium.com/pgilad/grunt-dev-update)
+[![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg?style=flat)](https://npmjs.org/package/grunt-dev-update)
+[![NPM Downloads](http://img.shields.io/npm/dm/grunt-dev-update.svg?style=flat)](https://npmjs.org/package/grunt-dev-update)
+[![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg?style=flat)](https://gemnasium.com/pgilad/grunt-dev-update)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 ## Getting Started
