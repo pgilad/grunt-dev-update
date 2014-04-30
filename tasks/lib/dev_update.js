@@ -5,7 +5,7 @@
  * Licensed under the MIT license.
  */
 
-var async = require('async'),
+var each = require('async-each-series'),
     inquirer = require('inquirer'),
     _ = require('lodash'),
     findup = require('findup-sync');
@@ -188,7 +188,7 @@ module.exports = function (grunt) {
 
         getOutdatedPkgs(packages, function (err, result) {
             var outdated = _.keys(result);
-            async.eachSeries(outdated, function (pkgName, cb) {
+            each(outdated, function (pkgName, cb) {
                 var pkg = _.findWhere(packages, {
                     name: pkgName
                 });

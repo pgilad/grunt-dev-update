@@ -35,14 +35,14 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-nodeunit": "^0.3.3",
-    "jshint-stylish": "~0.1.5",
+    "jshint-stylish": "^0.2.0",
     "load-grunt-tasks": "^0.4.0"
   },
   "dependencies": {
-    "async": "^0.6.2",
+    "async-each-series": "0.0.1",
     "findup-sync": "~0.1.2",
-    "inquirer": "~0.4.0",
-    "lodash": "~2.4.1"
+    "inquirer": "^0.4.1",
+    "lodash": "^2.4.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
