@@ -29,7 +29,9 @@ module.exports = function (grunt) {
                 dependencies: false
             },
             //by deafult - use matchdep default findup to locate package.json
-            packageJson: null
+            packageJson: null,
+            // default: when installing use the explicit version instead of "latest"
+            exact: false
         });
 
         grunt.verbose.writelns('Processing target: ' + this.target);
