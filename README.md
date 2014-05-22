@@ -122,6 +122,27 @@ nearest package.json). This is the recommended and default option.
 
 For better understanding the `String` and `Object` option, please see [matchdep config](https://github.com/tkellen/node-matchdep#config).
 
+#### options.exact
+Type: `Boolean`
+Default value: `false`
+
+If `true`, will lock the version in your `package.json` at the latest version 
+found.  If `false`, it will default to NPM's behavior for `--save` and 
+`--save-dev`.
+
+```js
+// exact: false
+dependencies: {
+  "foo": "^1.2.3"
+}
+
+// exact: true
+dependencies: {
+  "foo": "1.2.3"
+}
+```
+
+
 ### Usage Examples
 
 #### Default Options
@@ -139,7 +160,8 @@ grunt.initConfig({
                     devDependencies: true, //only devDependencies
                     dependencies: false
                 },
-                packageJson: null //find package.json automatically
+                packageJson: null //find package.json automatically,
+                exact: false // do not save exact version
             }
         }
     }

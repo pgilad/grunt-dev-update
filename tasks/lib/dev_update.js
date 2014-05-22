@@ -65,8 +65,9 @@ module.exports = function (grunt) {
      * @param {String} dependency
      * @param {String} phase
      * @param {String} saveType should be either --save or --save-dev
+     * @param {String} version Latest version of dependency
      */
-    var getSpawnArguments = function (dependency, phase, saveType) {
+    var getSpawnArguments = function (dependency, phase, saveType, version) {
         switch (phase) {
         case 'outdated':
             return ['outdated', '--json', '--depth=0'];
@@ -74,8 +75,11 @@ module.exports = function (grunt) {
         case 'update':
             return ['update', dependency];
         case 'install':
+            // if using npm >= 1.4.5, the --save-exact and --save-dev-exact
+            // options are available, but this is backwards-compatible.
+            version = exports.options.exact ? version : 'latest';
             //this will force the version to install to override locks in package.json
-            return ['install', dependency + '@latest', saveType];
+            return ['install', dependency + '@' + version, saveType];
             //no action detected
         default:
             return [];
@@ -114,7 +118,7 @@ module.exports = function (grunt) {
             return done();
         }
         var updateType = exports.options.semver ? 'update' : 'install';
-        var spawnArgs = getSpawnArguments(pkg.name, updateType, pkg.installType);
+        var spawnArgs = getSpawnArguments(pkg.name, updateType, pkg.installType, specs.latest);
 
         //prompt user if package should be updated
         if (exports.options.updateType === 'prompt') {
