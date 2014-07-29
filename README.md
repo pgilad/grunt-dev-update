@@ -57,9 +57,9 @@ In your project's Gruntfile, add a task config named `devUpdate` to the data obj
 ```js
 grunt.initConfig({
     devUpdate: {
-        your_target: {
+        main: {
             options: {
-            // Target specific options go here
+                //task options go here
             }
         }
     }
