@@ -5,13 +5,12 @@
  * Licensed under the MIT license.
  */
 
-var each = require('async-each-series'),
-    inquirer = require('inquirer'),
-    _ = require('lodash'),
-    findup = require('findup-sync');
+var asyncEach = require('async-each-series');
+var inquirer = require('inquirer');
+var _ = require('lodash');
+var findup = require('findup-sync');
 
 module.exports = function (grunt) {
-
     var exports = {
         options: {},
     };
@@ -23,10 +22,7 @@ module.exports = function (grunt) {
         opts: {}
     };
 
-    /**
-     * Get the dev dependencies packages to update from package.json
-     */
-    var getPackageNames = function (packages) {
+    var getPackageJson = function () {
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
@@ -35,7 +31,13 @@ module.exports = function (grunt) {
                 cwd: process.cwd()
             });
         }
+    };
 
+    /**
+     * Get the dev dependencies packages to update from package.json
+     */
+    var getPackageNames = function (packages) {
+        getPackageJson();
         try {
             //load package json
             var pkg = require(exports.options.packageJson);
@@ -109,39 +111,35 @@ module.exports = function (grunt) {
         grunt.log.writelns('Wanted version\t: %s', specs.wanted);
         grunt.log.writelns('Latest version\t: %s', specs.latest.red);
 
-        //only report outdated, do nothing
-        if (exports.options.updateType === 'report') {
+        var updateType = exports.options.updateType;
+        if (updateType === 'fail') {
+            grunt.warn('Found an outdated package ' + String(pkg.name).underline + '.', 3);
+        }
+        if (updateType === 'report') {
             return done();
         }
-        var updateType = exports.options.semver ? 'update' : 'install';
-        var spawnArgs = getSpawnArguments(pkg.name, updateType, pkg.installType);
+        var updateMethod = exports.options.semver ? 'update' : 'install';
+        var spawnArgs = getSpawnArguments(pkg.name, updateMethod, pkg.installType);
 
-        //prompt user if package should be updated
-        if (exports.options.updateType === 'prompt') {
-            //prompt to update
-            var msg = 'update using [npm ' + spawnArgs.join(' ') + ']';
-            return inquirer.prompt({
-                name: 'confirm',
-                message: msg,
-                default: false,
-                type: 'confirm'
-            }, function (result) {
-                if (result.confirm) {
-                    //user accepted update
-                    return exports.updatePackage(spawnArgs, done);
-                } else {
-                    return done();
-                }
-            });
-        }
         //force package update
-        if (exports.options.updateType === 'force') {
+        if (updateType === 'force') {
             //update without asking user
             return exports.updatePackage(spawnArgs, done);
         }
-
-        //shouldn't get here but just in case
-        return done();
+        //assume updateType === 'prompt'
+        var msg = 'update using [npm ' + spawnArgs.join(' ') + ']';
+        return inquirer.prompt({
+            name: 'confirm',
+            message: msg,
+            default: false,
+            type: 'confirm'
+        }, function (result) {
+            if (!result.confirm) {
+                return done;
+            }
+            //user accepted update
+            exports.updatePackage(spawnArgs, done);
+        });
     };
 
     exports.updatePackage = function (spawnArgs, done) {
@@ -188,12 +186,12 @@ module.exports = function (grunt) {
 
         getOutdatedPkgs(packages, function (err, result) {
             var outdated = _.keys(result);
-            each(outdated, function (pkgName, cb) {
+            asyncEach(outdated, function (pkgName, cb) {
                 var pkg = _.findWhere(packages, {
                     name: pkgName
                 });
                 var specs = result[pkgName];
-                return processByUpdateType(pkg, specs, cb);
+                processByUpdateType(pkg, specs, cb);
             }, done);
         });
     };

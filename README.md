@@ -15,7 +15,7 @@ as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) 
 Once you're familiar with that process, you may install this plugin with this command:
 
 ```bash
-npm install grunt-dev-update --save-dev
+npm install --save-dev grunt-dev-update
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
@@ -27,7 +27,7 @@ grunt.loadNpmTasks('grunt-dev-update');
 The best way to load tasks is probably using [load-grunt-tasks](https://github.com/sindresorhus/load-grunt-tasks)
 
 ```bash
-npm i load-grunt-tasks -D
+npm install --save-dev load-grunt-tasks
 ```
 
 And then add to your gruntfile.js:
@@ -83,6 +83,7 @@ How devUpdate should handle the outdated packages. Valid options:
 * `report` - Just report that the package is outdated.
 * `prompt` - Prompt user to confirm update of every package
 * `force` - Automatically force the update for the outdated packages.
+* `fail` - Fail task if an outdated package was found.
 
 #### options.packages
 Type: `Object`

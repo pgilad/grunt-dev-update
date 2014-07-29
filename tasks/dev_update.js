@@ -5,13 +5,13 @@
  * Licensed under the MIT license.
  */
 
-var _ = require('lodash'),
-    path = require('path');
+var _ = require('lodash');
+var path = require('path');
 
 module.exports = function (grunt) {
 
     var devUpdate = require('./lib/dev_update')(grunt);
-    var possibleUpdateTypes = ['report', 'force', 'prompt'];
+    var possibleUpdateTypes = ['report', 'force', 'prompt', 'fail'];
 
     grunt.registerMultiTask('devUpdate', 'See your outdated devDependencies and update them', function () {
 
@@ -35,13 +35,14 @@ module.exports = function (grunt) {
         grunt.verbose.writelns('Processing target: ' + this.target);
 
         //validate updateType option
-        if (!_.contains(possibleUpdateTypes, devUpdate.options.updateType)) {
-            grunt.fail.warn('updateType ' + String(devUpdate.options.updateType).cyan + ' not supported.');
+        var updateType = devUpdate.options.updateType;
+        if (!_.contains(possibleUpdateTypes, updateType)) {
+            grunt.fail.warn('updateType ' + String(updateType).cyan + ' not supported.');
             //if force
             devUpdate.options.updateType = 'report';
         }
 
-        if (devUpdate.options.updateType === 'force') {
+        if (updateType === 'force') {
             //warn user for using force option
             grunt.log.writelns('Running with update type of ' + 'force'.red);
         }
@@ -61,7 +62,6 @@ module.exports = function (grunt) {
                 devUpdate.options.packageJson = _pkgjson;
             }
         }
-
         //run task
         devUpdate.runTask(this.async());
     });
