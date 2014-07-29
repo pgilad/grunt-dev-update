@@ -17,19 +17,15 @@ module.exports = function (grunt) {
 
         //set default options
         devUpdate.options = this.options({
-            //just report
-            updateType: 'report',
-            //don't report ok packages by default
-            reportUpdated: false,
-            semver: true,
-            //what packages to check
+            updateType: 'report', //just report outdated packages
+            reportUpdated: false, //don't report up-to-date packages
+            semver: true, //stay within semver when updating
             packages: {
-                //only devDependencies by default
-                devDependencies: true,
+                devDependencies: true, //only check for devDependencies
                 dependencies: false
             },
-            //by deafult - use matchdep default findup to locate package.json
-            packageJson: null
+            packageJson: null, //use matchdep default findup to locate package.json
+            reportOnlyPkgs: [] //use updateType action on all packages
         });
 
         grunt.verbose.writelns('Processing target: ' + this.target);
@@ -37,7 +33,7 @@ module.exports = function (grunt) {
         //validate updateType option
         var updateType = devUpdate.options.updateType;
         if (!_.contains(possibleUpdateTypes, updateType)) {
-            grunt.fail.warn('updateType ' + String(updateType).cyan + ' not supported.');
+            grunt.warn('updateType ' + String(updateType).cyan + ' not supported.');
             //if force
             devUpdate.options.updateType = 'report';
         }
@@ -47,6 +43,12 @@ module.exports = function (grunt) {
             grunt.log.writelns('Running with update type of ' + 'force'.red);
         }
 
+        if (!Array.isArray(devUpdate.options.reportOnlyPkgs)) {
+            grunt.warn('ignoredPackages must be an array.', 3);
+            //if force
+            devUpdate.options.reportOnlyPkgs = [];
+        }
+
         var _pkgjson = devUpdate.options.packageJson;
         //use packageJson option as string, but file doesn't exist.
         if (typeof _pkgjson === 'string') {
@@ -54,7 +56,7 @@ module.exports = function (grunt) {
             _pkgjson = path.resolve(process.cwd(), _pkgjson);
 
             if (!grunt.file.exists(_pkgjson)) {
-                grunt.fail.warn('Cannot locate package.json in supplied path ' + _pkgjson);
+                grunt.warn('Cannot locate package.json in supplied path ' + _pkgjson);
                 //if force
                 devUpdate.options.packageJson = null;
             } else {

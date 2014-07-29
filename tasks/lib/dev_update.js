@@ -90,36 +90,49 @@ module.exports = function (grunt) {
         grunt.util.spawn(spawnOptions, function (error, result) {
             if (error) {
                 grunt.verbose.writelns(error);
-                grunt.fail.fatal('Task failed due to ', error);
+                grunt.fatal('Task failed due to ' + error);
                 return done(error);
+            }
+            if (!result || !result.stdout) {
+                return done();
             }
             var jsonResults;
             try {
                 jsonResults = JSON.parse(result.stdout);
             } catch (e) {
-                grunt.fail.fatal('Task failed with JSON.parse due to ', e);
+                grunt.fatal('Task failed with JSON.parse due to ' + e);
             }
             return done(null, jsonResults);
         });
     };
 
+    var shouldOnlyReport = function (reportOnlyPkgs, pkgName) {
+        return reportOnlyPkgs.length && _.contains(reportOnlyPkgs, pkgName);
+    };
+
     var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
-        grunt.log.subhead('Package name\t: %s', pkg.name);
-        grunt.log.writelns('Package type\t: %s', pkg.type);
-        grunt.log.writelns('Current version\t: %s', specs.current.green);
-        grunt.log.writelns('Wanted version\t: %s', specs.wanted);
-        grunt.log.writelns('Latest version\t: %s', specs.latest.red);
+        grunt.log.subhead('Package name\t:', pkg.name);
+        grunt.log.writelns('Package type\t:', pkg.type);
+        grunt.log.writelns('Current version\t:', specs.current.green);
+        grunt.log.writelns('Wanted version\t:', specs.wanted);
+        grunt.log.writelns('Latest version\t:', specs.latest.red);
 
         var updateType = exports.options.updateType;
         if (updateType === 'fail') {
-            grunt.warn('Found an outdated package ' + String(pkg.name).underline + '.', 3);
+            grunt.warn('Found an outdated package: ' + String(pkg.name).underline + '.', 3);
         }
         if (updateType === 'report') {
             return done();
         }
-        var updateMethod = exports.options.semver ? 'update' : 'install';
-        var spawnArgs = getSpawnArguments(pkg.name, updateMethod, pkg.installType);
+        if (shouldOnlyReport(exports.options.reportOnlyPkgs, pkg.name)) {
+            return done();
+        }
+        var spawnArgs = getSpawnArguments(
+            pkg.name,
+            exports.options.semver ? 'update' : 'install',
+            pkg.installType
+        );
 
         //force package update
         if (updateType === 'force') {
@@ -183,10 +196,12 @@ module.exports = function (grunt) {
         if (!packages || !packages.length) {
             return done();
         }
-
         getOutdatedPkgs(packages, function (err, result) {
-            var outdated = _.keys(result);
-            asyncEach(outdated, function (pkgName, cb) {
+            if (!result) {
+                grunt.log.oklns('All packages are up to date');
+                return done();
+            }
+            asyncEach(_.keys(result), function (pkgName, cb) {
                 var pkg = _.findWhere(packages, {
                     name: pkgName
                 });

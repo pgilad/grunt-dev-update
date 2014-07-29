@@ -123,6 +123,14 @@ nearest package.json). This is the recommended and default option.
 
 For better understanding the `String` and `Object` option, please see [matchdep config](https://github.com/tkellen/node-matchdep#config).
 
+#### options.reportOnlyPkgs
+Type: `Array`
+Default value: `[]`
+
+Specify packages that will be checked for newer version but only reported if outdated.
+
+This is useful if you are aware of packages that will be outdated, but don't want to update them.
+
 ### Usage Examples
 
 #### Default Options
@@ -134,13 +142,14 @@ grunt.initConfig({
         main: {
             options: {
                 updateType: 'report', //just report outdated packages
-                reportUpdated: false, //don't report already updated packages
-                semver: true, //use package.json semver rules when updating
-                packages: { //what packages to check
-                    devDependencies: true, //only devDependencies
+                reportUpdated: false, //don't report up-to-date packages
+                semver: true, //stay within semver when updating
+                packages: {
+                    devDependencies: true, //only check for devDependencies
                     dependencies: false
                 },
-                packageJson: null //find package.json automatically
+                packageJson: null, //use matchdep default findup to locate package.json
+                reportOnlyPkgs: [] //use updateType action on all packages
             }
         }
     }
