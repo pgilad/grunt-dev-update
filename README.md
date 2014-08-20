@@ -3,7 +3,6 @@
 
 [![NPM Version](http://img.shields.io/npm/v/grunt-dev-update.svg?style=flat)](https://npmjs.org/package/grunt-dev-update)
 [![NPM Downloads](http://img.shields.io/npm/dm/grunt-dev-update.svg?style=flat)](https://npmjs.org/package/grunt-dev-update)
-[![Dependencies](http://img.shields.io/gemnasium/pgilad/grunt-dev-update.svg?style=flat)](https://gemnasium.com/pgilad/grunt-dev-update)
 [![Built with Grunt](http://img.shields.io/badge/BUILT_WITH-GRUNT-orange.svg?style=flat)](http://gruntjs.com/)
 
 ## Getting Started
