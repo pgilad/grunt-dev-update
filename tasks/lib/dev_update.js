@@ -119,6 +119,10 @@ module.exports = function (grunt) {
         grunt.log.writelns('Latest version\t:', specs.latest.red);
 
         var updateType = exports.options.updateType;
+        if (exports.options.semver && specs.current === specs.wanted) {
+            grunt.log.ok('Package is up to date');
+            return done();
+        }
         if (updateType === 'fail') {
             grunt.warn('Found an outdated package: ' + String(pkg.name).underline + '.', 3);
         }
@@ -213,3 +217,4 @@ module.exports = function (grunt) {
 
     return exports;
 };
+
