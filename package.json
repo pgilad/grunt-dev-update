@@ -1,6 +1,6 @@
 {
   "name": "grunt-dev-update",
-  "version": "0.6.1",
+  "version": "0.7.1",
   "description": "Automate the updating of your package.json packages with a grunt task",
   "homepage": "https://github.com/pgilad/grunt-dev-update",
   "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
@@ -38,14 +38,14 @@
   "devDependencies": {
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-nodeunit": "^0.4.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
     "jshint-stylish": "^0.4.0",
     "load-grunt-tasks": "^0.6.0"
   },
   "dependencies": {
     "async-each-series": "^0.1.0",
-    "findup-sync": "~0.1.2",
-    "inquirer": "^0.6.0",
+    "findup-sync": "^0.1.3",
+    "inquirer": "^0.7.2",
     "lodash": "^2.4.1"
   },
   "peerDependencies": {
