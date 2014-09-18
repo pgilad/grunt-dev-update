@@ -114,7 +114,7 @@ module.exports = function (grunt) {
         /** Update phase **/
         grunt.log.subhead('Package name\t:', pkg.name);
         grunt.log.writelns('Package type\t:', pkg.type);
-        grunt.log.writelns('Current version\t:', specs.current && specs.current.green || '<no installed>');
+        grunt.log.writelns('Current version\t:', specs.current && specs.current.green || '<not installed>');
         grunt.log.writelns('Wanted version\t:', specs.wanted);
         grunt.log.writelns('Latest version\t:', specs.latest.red);
 
