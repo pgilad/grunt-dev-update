@@ -7,6 +7,7 @@
 
 var asyncEach = require('async-each-series');
 var inquirer = require('inquirer');
+var semver = require('semver');
 var _ = require('lodash');
 var findup = require('findup-sync');
 
@@ -210,6 +211,10 @@ module.exports = function (grunt) {
                     name: pkgName
                 });
                 var specs = result[pkgName];
+                if (!semver.valid(specs.wanted) || !semver.valid(specs.latest)) {
+                    grunt.verbose.writelns('Package ' + pkgName.blue + ' isn\'t from NPM, currently not handling those. Skipping...');
+                    return cb();
+                }
                 processByUpdateType(pkg, specs, cb);
             }, done);
         });
@@ -217,4 +222,3 @@ module.exports = function (grunt) {
 
     return exports;
 };
-
