@@ -1,6 +1,6 @@
 {
   "name": "grunt-dev-update",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Automate the updating of your package.json packages with a grunt task",
   "homepage": "https://github.com/pgilad/grunt-dev-update",
   "bugs": "https://github.com/pgilad/grunt-dev-update/issues",
