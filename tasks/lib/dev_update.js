@@ -27,8 +27,9 @@ module.exports = function (grunt) {
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
+            return exports.options.packageJson;
         } else {
-            exports.options.packageJson = findup('package.json', {
+            return findup('package.json', {
                 cwd: process.cwd()
             });
         }
@@ -38,14 +39,14 @@ module.exports = function (grunt) {
      * Get the dev dependencies packages to update from package.json
      */
     var getPackageNames = function (packages) {
-        getPackageJson();
+        var pkgJson = getPackageJson();
         try {
             //load package json
-            var pkg = require(exports.options.packageJson);
+            var pkg = require(pkgJson);
         } catch (e) {
             //couldn't get packages... critical error
             grunt.verbose.writelns('Error ', e);
-            grunt.fail.fatal('Could not read from package.json', exports.options.packageJson);
+            grunt.fail.fatal('Could not read from package.json', pkgJson);
         }
 
         var _packages = _.map(packages, function (dep) {
@@ -201,6 +202,7 @@ module.exports = function (grunt) {
         if (!packages || !packages.length) {
             return done();
         }
+
         getOutdatedPkgs(packages, function (err, result) {
             if (!result) {
                 grunt.log.oklns('All packages are up to date');
