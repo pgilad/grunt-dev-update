@@ -10,6 +10,7 @@ var inquirer = require('inquirer');
 var semver = require('semver');
 var _ = require('lodash');
 var findup = require('findup-sync');
+var npa = require('npm-package-arg');
 
 module.exports = function (grunt) {
     var exports = {
@@ -23,7 +24,7 @@ module.exports = function (grunt) {
         opts: {}
     };
 
-    var getPackageJson = function () {
+    var getPkgJsonPath = function () {
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
@@ -35,33 +36,44 @@ module.exports = function (grunt) {
         }
     };
 
+    var getPackageJson = function (from) {
+        var pkg;
+        try {
+            //load package json
+            pkg = require(from);
+        } catch (e) {
+            //couldn't get packages... critical error
+            grunt.verbose.writelns('Error ', e);
+            grunt.fail.fatal('Could not read from package.json', from);
+        }
+        return pkg;
+    };
+
     /**
      * Get the dev dependencies packages to update from package.json
      */
     var getPackageNames = function (packages) {
-        var pkgJson = getPackageJson();
-        try {
-            //load package json
-            var pkg = require(pkgJson);
-        } catch (e) {
-            //couldn't get packages... critical error
-            grunt.verbose.writelns('Error ', e);
-            grunt.fail.fatal('Could not read from package.json', pkgJson);
-        }
-
-        var _packages = _.map(packages, function (dep) {
+        var pkg = getPackageJson(getPkgJsonPath());
+        var mappedPkgs = [];
+        _.each(packages, function (dep) {
+            //get packages by type from package.json
             dep.deps = pkg[dep.type];
             grunt.log.writeln('Found ' + _.keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
-            return _.map(dep.deps, function (item, key) {
-                return {
+            _.each(dep.deps, function (item, key) {
+                var parsed = npa(key + '@' + item);
+                grunt.verbose.writelns('Parsed package:', key, parsed);
+                if (!_.contains(['version', 'tag', 'range'], parsed.type)) {
+                    grunt.verbose.writelns(key.red + ' - doesn\'t seem local to npm. Skipping...');
+                    return null;
+                }
+                mappedPkgs.push({
                     name: key,
                     installType: dep.installType,
                     type: dep.type
-                };
+                });
             });
         });
-
-        return _.flatten(_packages);
+        return mappedPkgs;
     };
 
     /**
