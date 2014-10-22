@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('devUpdate', 'See your outdated devDependencies and update them', function () {
 
         //set default options
-        devUpdate.options = this.options({
+        var options = this.options({
             updateType: 'report', //just report outdated packages
             reportUpdated: false, //don't report up-to-date packages
             semver: true, //stay within semver when updating
@@ -31,11 +31,11 @@ module.exports = function (grunt) {
         grunt.verbose.writelns('Processing target: ' + this.target);
 
         //validate updateType option
-        var updateType = devUpdate.options.updateType;
+        var updateType = options.updateType;
         if (!_.contains(possibleUpdateTypes, updateType)) {
             grunt.warn('updateType ' + String(updateType).cyan + ' not supported.');
             //if force
-            devUpdate.options.updateType = 'report';
+            options.updateType = 'report';
         }
 
         if (updateType === 'force') {
@@ -43,13 +43,13 @@ module.exports = function (grunt) {
             grunt.log.writelns('Running with update type of ' + 'force'.red);
         }
 
-        if (!Array.isArray(devUpdate.options.reportOnlyPkgs)) {
+        if (!Array.isArray(options.reportOnlyPkgs)) {
             grunt.warn('ignoredPackages must be an array.', 3);
             //if force
-            devUpdate.options.reportOnlyPkgs = [];
+            options.reportOnlyPkgs = [];
         }
 
-        var _pkgjson = devUpdate.options.packageJson;
+        var _pkgjson = options.packageJson;
         //use packageJson option as string, but file doesn't exist.
         if (typeof _pkgjson === 'string') {
             //path supplied is relative to process.cwd()
@@ -58,13 +58,13 @@ module.exports = function (grunt) {
             if (!grunt.file.exists(_pkgjson)) {
                 grunt.warn('Cannot locate package.json in supplied path ' + _pkgjson);
                 //if force
-                devUpdate.options.packageJson = null;
+                options.packageJson = null;
             } else {
                 //update option to reflect change
-                devUpdate.options.packageJson = _pkgjson;
+                options.packageJson = _pkgjson;
             }
         }
         //run task
-        devUpdate.runTask(this.async());
+        devUpdate.runTask(options, this.async());
     });
 };

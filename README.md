@@ -102,10 +102,10 @@ What kind of packages should be checked. Valid options:
 Type: `Boolean`
 Default value: `true`
 
-If true or undefined, packages will be updated with `npm update` and will be installed up to your allowed version in
+`true` - Packages will be updated with `npm update` and will be installed up to your allowed version in
 your `package.json`. Your allowed version is determined using [semver](http://semver.org).
 
-If false your packages will be updated to the latest version there is, regardless of your `package.json` specifications.
+`false` - Packages will be updated to the latest version there is, regardless of your `package.json` specifications.
 
 **Warning** - this could break packages and only use this option if you're sure of what you're doing.
 
