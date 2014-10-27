@@ -34,8 +34,6 @@ And then add to your gruntfile.js:
 require('load-grunt-tasks')(grunt);
 ```
 
-***
-
 ## The "devUpdate" task
 
 #### This plugin allows you to both update your dependencies and devDependencies with an automated task.
@@ -159,4 +157,5 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## License
-Copyright (c) 2014 Gilad Peleg. Licensed under the MIT license.
+
+MIT @[Gilad Peleg](http://giladpeleg.com)
