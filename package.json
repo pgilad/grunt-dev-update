@@ -1,45 +1,45 @@
 {
-    "name": "grunt-dev-update",
-    "version": "1.0.0",
-    "description": "Automate the updating of your package.json packages with a grunt task",
-    "repository": "pgilad/grunt-dev-update",
-    "license": "MIT",
-    "author": "Gilad Peleg <giladp007@gmail.com> (http://giladpeleg.com)",
-    "files": [
-        "tasks"
-    ],
-    "engines": {
-        "node": ">= 0.10.25"
-    },
-    "scripts": {
-        "test": "grunt test"
-    },
-    "keywords": [
-        "gruntplugin",
-        "devDependencies",
-        "dependencies",
-        "install",
-        "save-dev",
-        "save",
-        "automation",
-        "updates"
-    ],
-    "dependencies": {
-        "async-each-series": "^0.1.1",
-        "findup-sync": "^0.1.3",
-        "inquirer": "^0.8.0",
-        "lodash": "^2.4.1",
-        "npm-package-arg": "^3.0.0",
-        "semver": "^4.1.0"
-    },
-    "devDependencies": {
-        "grunt-contrib-clean": "^0.6.0",
-        "grunt-contrib-jshint": "^0.10.0",
-        "grunt-contrib-nodeunit": "^0.4.1",
-        "jshint-stylish": "^1.0.0",
-        "load-grunt-tasks": "^1.0.0"
-    },
-    "peerDependencies": {
-        "grunt": "^0.4.1"
-    }
+  "name": "grunt-dev-update",
+  "version": "1.0.1",
+  "description": "Automate the updating of your package.json packages with a grunt task",
+  "repository": "pgilad/grunt-dev-update",
+  "license": "MIT",
+  "author": "Gilad Peleg <giladp007@gmail.com> (http://giladpeleg.com)",
+  "files": [
+    "tasks"
+  ],
+  "engines": {
+    "node": ">= 0.10.25"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "gruntplugin",
+    "devDependencies",
+    "dependencies",
+    "install",
+    "save-dev",
+    "save",
+    "automation",
+    "updates"
+  ],
+  "dependencies": {
+    "async-each-series": "^0.1.1",
+    "findup-sync": "^0.1.3",
+    "inquirer": "^0.8.0",
+    "lodash": "^2.4.1",
+    "npm-package-arg": "^3.0.0",
+    "semver": "^4.1.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "jshint-stylish": "^1.0.0",
+    "load-grunt-tasks": "^1.0.0"
+  },
+  "peerDependencies": {
+    "grunt": "^0.4.1"
+  }
 }
