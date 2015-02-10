@@ -6,7 +6,6 @@
  */
 
 var asyncEach = require('async-each-series');
-var inquirer = require('inquirer');
 var semver = require('semver');
 var _ = require('lodash');
 var findup = require('findup-sync');
@@ -169,7 +168,7 @@ module.exports = function(grunt) {
         }
         //assume updateType === 'prompt'
         var msg = 'update using [npm ' + spawnArgs.join(' ') + ']';
-        return inquirer.prompt({
+        return require('inquirer').prompt({
             name: 'confirm',
             message: msg,
             default: false,
