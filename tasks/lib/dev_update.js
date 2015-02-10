@@ -18,7 +18,7 @@ var spawnOptions = {
     opts: {}
 };
 
-var shouldOnlyReport = function(reportOnlyPkgs, pkgName) {
+var shouldOnlyReport = function (reportOnlyPkgs, pkgName) {
     return reportOnlyPkgs.length && _.contains(reportOnlyPkgs, pkgName);
 };
 
@@ -28,18 +28,18 @@ var shouldOnlyReport = function(reportOnlyPkgs, pkgName) {
  * @param {String} dependency
  * @param {String} saveType should be either --save or --save-dev
  */
-var getSpawnArguments = function(phase, dependency, saveType) {
+var getSpawnArguments = function (phase, dependency, saveType) {
     switch (phase) {
-        case 'outdated':
-            return ['outdated', '--json', '--depth=0'];
-        case 'update':
-            return ['update', dependency];
-        case 'install':
-            //this will force the version to install to override locks in package.json
-            return ['install', dependency + '@latest', saveType];
-            //no action detected
-        default:
-            return [];
+    case 'outdated':
+        return ['outdated', '--json', '--depth=0'];
+    case 'update':
+        return ['update', dependency];
+    case 'install':
+        //this will force the version to install to override locks in package.json
+        return ['install', dependency + '@latest', saveType];
+        //no action detected
+    default:
+        return [];
     }
 };
 
@@ -53,12 +53,12 @@ var prodDeps = {
     installType: '--save'
 };
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     var exports = {
         options: {},
     };
 
-    var getPkgJsonPath = function() {
+    var getPkgJsonPath = function () {
         //how is package.json located
         if (exports.options.packageJson) {
             grunt.verbose.writelns('Using custom option for package.json: ' + exports.options.packageJson);
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
         }
     };
 
-    var getPackageJson = function(from) {
+    var getPackageJson = function (from) {
         var pkg;
         try {
             //load package json
@@ -86,14 +86,14 @@ module.exports = function(grunt) {
     /**
      * Get the dev dependencies packages to update from package.json
      */
-    var getPackageNames = function(packages) {
+    var getPackageNames = function (packages) {
         var pkg = getPackageJson(getPkgJsonPath());
         var mappedPkgs = [];
-        _.each(packages, function(dep) {
+        _.each(packages, function (dep) {
             //get packages by type from package.json
             dep.deps = pkg[dep.type];
             grunt.log.writeln('Found ' + _.keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
-            _.each(dep.deps, function(item, key) {
+            _.each(dep.deps, function (item, key) {
                 var parsed = npa(key + '@' + item);
                 grunt.verbose.writelns('Parsed package:', key, parsed);
                 if (!_.contains(['version', 'tag', 'range'], parsed.type)) {
@@ -110,11 +110,11 @@ module.exports = function(grunt) {
         return mappedPkgs;
     };
 
-    var getOutdatedPkgs = function(packages, done) {
+    var getOutdatedPkgs = function (packages, done) {
         var pkgNames = _.pluck(packages, 'name');
         spawnOptions.args = getSpawnArguments('outdated').concat(pkgNames);
         spawnOptions.opts = {};
-        grunt.util.spawn(spawnOptions, function(error, result) {
+        grunt.util.spawn(spawnOptions, function (error, result) {
             if (error) {
                 grunt.verbose.writelns(error);
                 grunt.fatal('Task failed due to ' + error);
@@ -133,7 +133,7 @@ module.exports = function(grunt) {
         });
     };
 
-    var processByUpdateType = function(pkg, specs, done) {
+    var processByUpdateType = function (pkg, specs, done) {
         /** Update phase **/
         grunt.log.subhead('Package name\t:', pkg.name);
         grunt.log.writelns('Package type\t:', pkg.type);
@@ -173,7 +173,7 @@ module.exports = function(grunt) {
             message: msg,
             default: false,
             type: 'confirm'
-        }, function(result) {
+        }, function (result) {
             if (!result.confirm) {
                 return done;
             }
@@ -182,13 +182,13 @@ module.exports = function(grunt) {
         });
     };
 
-    var updatePackage = function(spawnArgs, done) {
+    var updatePackage = function (spawnArgs, done) {
         //assign args
         spawnOptions.args = spawnArgs;
         spawnOptions.opts = {
             stdio: 'inherit'
         };
-        grunt.util.spawn(spawnOptions, function(error) {
+        grunt.util.spawn(spawnOptions, function (error) {
             if (error) {
                 grunt.verbose.writelns(error);
                 grunt.log.writelns('Error while running ' + spawnArgs);
@@ -197,11 +197,11 @@ module.exports = function(grunt) {
         });
     };
 
-    exports.runTask = function(options, done) {
+    exports.runTask = function (options, done) {
         exports.options = options;
 
         //get only the kind of packages user wants
-        var packageTypes = _.filter([devDeps, prodDeps], function(pkgType) {
+        var packageTypes = _.filter([devDeps, prodDeps], function (pkgType) {
             return options.packages[pkgType.type];
         });
 
@@ -211,17 +211,17 @@ module.exports = function(grunt) {
 
         //get the package names
         var packages = getPackageNames(packageTypes);
-        //no pacakges to check
+        //no packages to check
         if (!packages || !packages.length) {
             return done();
         }
 
-        getOutdatedPkgs(packages, function(err, result) {
+        getOutdatedPkgs(packages, function (err, result) {
             if (!result) {
                 grunt.log.oklns('All packages are up to date');
                 return done();
             }
-            asyncEach(_.keys(result), function(pkgName, cb) {
+            asyncEach(_.keys(result), function (pkgName, cb) {
                 var pkg = _.findWhere(packages, {
                     name: pkgName
                 });
