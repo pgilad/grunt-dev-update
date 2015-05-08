@@ -19,7 +19,7 @@ var spawnOptions = {
 };
 
 var shouldOnlyReport = function (reportOnlyPkgs, pkgName) {
-    return reportOnlyPkgs.length && _.contains(reportOnlyPkgs, pkgName);
+    return reportOnlyPkgs.length && _.includes(reportOnlyPkgs, pkgName);
 };
 
 /**
@@ -89,14 +89,14 @@ module.exports = function (grunt) {
     var getPackageNames = function (packages) {
         var pkg = getPackageJson(getPkgJsonPath());
         var mappedPkgs = [];
-        _.each(packages, function (dep) {
+        _.forEach(packages, function (dep) {
             //get packages by type from package.json
             dep.deps = pkg[dep.type];
             grunt.log.writeln('Found ' + _.keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
-            _.each(dep.deps, function (item, key) {
+            _.forEach(dep.deps, function (item, key) {
                 var parsed = npa(key + '@' + item);
                 grunt.verbose.writelns('Parsed package:', key, parsed);
-                if (!_.contains(['version', 'tag', 'range'], parsed.type)) {
+                if (!_.includes(['version', 'tag', 'range'], parsed.type)) {
                     grunt.verbose.writelns(key.red + ' - doesn\'t seem local to npm. Skipping...');
                     return null;
                 }

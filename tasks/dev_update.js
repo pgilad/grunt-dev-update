@@ -32,7 +32,7 @@ module.exports = function (grunt) {
 
         //validate updateType option
         var updateType = options.updateType;
-        if (!_.contains(possibleUpdateTypes, updateType)) {
+        if (!_.includes(possibleUpdateTypes, updateType)) {
             grunt.warn('updateType ' + String(updateType).cyan + ' not supported.');
             //if force
             options.updateType = 'report';
