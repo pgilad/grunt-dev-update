@@ -175,7 +175,7 @@ module.exports = function (grunt) {
             type: 'confirm'
         }, function (result) {
             if (!result.confirm) {
-                return done;
+                return done();
             }
             //user accepted update
             updatePackage(spawnArgs, done);
