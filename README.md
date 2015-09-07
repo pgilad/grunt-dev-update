@@ -111,7 +111,7 @@ your `package.json`. Your allowed version is determined using [semver](http://se
 Type: `null|Object|String`
 Default value: `null`
 
-This option allow you to manully configure the path of your **package.json**. Valid options:
+This option allow you to manually configure the path of your **package.json**. Valid options:
 
 * `null` - This will use `matchdep` own logic for finding your package.json (using `findup` to find
 nearest package.json). This is the recommended and default option.
