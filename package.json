@@ -25,19 +25,19 @@
     "updates"
   ],
   "dependencies": {
-    "async-each-series": "^1.0.0",
-    "findup-sync": "^0.2.1",
-    "inquirer": "^0.9.0",
-    "lodash": "^3.9.1",
-    "npm-package-arg": "^4.0.1",
-    "semver": "^5.0.1"
+    "async-each-series": "^1.1.0",
+    "findup-sync": "^0.4.0",
+    "inquirer": "^0.12.0",
+    "lodash": "^4.8.2",
+    "npm-package-arg": "^4.1.0",
+    "semver": "^5.1.0"
   },
   "devDependencies": {
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.11.2",
-    "grunt-contrib-nodeunit": "^0.4.1",
-    "jshint-stylish": "^2.0.1",
-    "load-grunt-tasks": "^3.2.0"
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "jshint-stylish": "^2.1.0",
+    "load-grunt-tasks": "^3.4.1"
   },
   "peerDependencies": {
     "grunt": ">=0.4.0"

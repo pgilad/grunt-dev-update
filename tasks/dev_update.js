@@ -5,7 +5,7 @@
  * Licensed under the MIT license.
  */
 
-var _ = require('lodash');
+var includes = require('lodash/includes');
 var path = require('path');
 
 module.exports = function (grunt) {
@@ -32,7 +32,7 @@ module.exports = function (grunt) {
 
         //validate updateType option
         var updateType = options.updateType;
-        if (!_.includes(possibleUpdateTypes, updateType)) {
+        if (!includes(possibleUpdateTypes, updateType)) {
             grunt.warn('updateType ' + String(updateType).cyan + ' not supported.');
             //if force
             options.updateType = 'report';

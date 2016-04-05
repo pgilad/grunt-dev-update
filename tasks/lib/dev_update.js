@@ -1,15 +1,20 @@
 /*
  * grunt-dev-update
  *
- * Copyright (c) 2014 Gilad Peleg
+ * Copyright (c) 2016 Gilad Peleg
  * Licensed under the MIT license.
  */
 
 var asyncEach = require('async-each-series');
-var semver = require('semver');
-var _ = require('lodash');
+var filter = require('lodash/filter');
+var find = require('lodash/find');
 var findup = require('findup-sync');
+var forEach = require('lodash/forEach');
+var includes = require('lodash/includes');
+var keys = require('lodash/keys');
+var map = require('lodash/map');
 var npa = require('npm-package-arg');
+var semver = require('semver');
 
 //default spawn options
 var spawnOptions = {
@@ -19,7 +24,7 @@ var spawnOptions = {
 };
 
 var shouldOnlyReport = function (reportOnlyPkgs, pkgName) {
-    return reportOnlyPkgs.length && _.includes(reportOnlyPkgs, pkgName);
+    return reportOnlyPkgs.length && includes(reportOnlyPkgs, pkgName);
 };
 
 /**
@@ -89,14 +94,14 @@ module.exports = function (grunt) {
     var getPackageNames = function (packages) {
         var pkg = getPackageJson(getPkgJsonPath());
         var mappedPkgs = [];
-        _.forEach(packages, function (dep) {
+        forEach(packages, function (dep) {
             //get packages by type from package.json
             dep.deps = pkg[dep.type];
-            grunt.log.writeln('Found ' + _.keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
-            _.forEach(dep.deps, function (item, key) {
+            grunt.log.writeln('Found ' + keys(dep.deps).length + ' ' + dep.type.blue + ' to check for latest version');
+            forEach(dep.deps, function (item, key) {
                 var parsed = npa(key + '@' + item);
                 grunt.verbose.writelns('Parsed package:', key, parsed);
-                if (!_.includes(['version', 'tag', 'range'], parsed.type)) {
+                if (!includes(['version', 'tag', 'range'], parsed.type)) {
                     grunt.verbose.writelns(key.red + ' - doesn\'t seem local to npm. Skipping...');
                     return null;
                 }
@@ -111,7 +116,7 @@ module.exports = function (grunt) {
     };
 
     var getOutdatedPkgs = function (packages, done) {
-        var pkgNames = _.pluck(packages, 'name');
+        var pkgNames = map(packages, 'name');
         spawnOptions.args = getSpawnArguments('outdated').concat(pkgNames);
         spawnOptions.opts = {};
         grunt.util.spawn(spawnOptions, function (error, result) {
@@ -201,7 +206,7 @@ module.exports = function (grunt) {
         exports.options = options;
 
         //get only the kind of packages user wants
-        var packageTypes = _.filter([devDeps, prodDeps], function (pkgType) {
+        var packageTypes = filter([devDeps, prodDeps], function (pkgType) {
             return options.packages[pkgType.type];
         });
 
@@ -221,8 +226,8 @@ module.exports = function (grunt) {
                 grunt.log.oklns('All packages are up to date');
                 return done();
             }
-            asyncEach(_.keys(result), function (pkgName, cb) {
-                var pkg = _.findWhere(packages, {
+            asyncEach(keys(result), function (pkgName, cb) {
+                var pkg = find(packages, {
                     name: pkgName
                 });
                 var specs = result[pkgName];
