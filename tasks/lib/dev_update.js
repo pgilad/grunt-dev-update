@@ -120,7 +120,7 @@ module.exports = function (grunt) {
         spawnOptions.args = getSpawnArguments('outdated').concat(pkgNames);
         spawnOptions.opts = {};
         grunt.util.spawn(spawnOptions, function (error, result) {
-            if (error) {
+            if (error && !result) {
                 grunt.verbose.writelns(error);
                 grunt.fatal('Task failed due to ' + error);
                 return done(error);

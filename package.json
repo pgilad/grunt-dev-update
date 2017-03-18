@@ -9,7 +9,7 @@
     "tasks"
   ],
   "engines": {
-    "node": ">= 0.10.25"
+    "node": ">=6.0.0"
   },
   "scripts": {
     "test": "grunt test"
@@ -33,13 +33,11 @@
     "semver": "^5.1.0"
   },
   "devDependencies": {
+    "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-nodeunit": "^1.0.0",
     "jshint-stylish": "^2.1.0",
     "load-grunt-tasks": "^3.4.1"
-  },
-  "peerDependencies": {
-    "grunt": ">=0.4.0"
   }
 }
