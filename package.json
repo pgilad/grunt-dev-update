@@ -1,6 +1,6 @@
 {
   "name": "grunt-dev-update",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Automate the updating of your package.json packages with a grunt task",
   "repository": "pgilad/grunt-dev-update",
   "license": "MIT",
