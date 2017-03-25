@@ -38,7 +38,7 @@ var getSpawnArguments = function (phase, dependency, saveType) {
     case 'outdated':
         return ['outdated', '--json', '--depth=0'];
     case 'update':
-        return ['update', dependency];
+        return ['update', dependency, saveType];
     case 'install':
         //this will force the version to install to override locks in package.json
         return ['install', dependency + '@latest', saveType];
