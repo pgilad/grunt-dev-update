@@ -147,17 +147,18 @@ module.exports = function (grunt) {
         grunt.log.writelns('Latest version\t:', specs.latest.red);
 
         var updateType = exports.options.updateType;
+        var onlyReportPkg = shouldOnlyReport(exports.options.reportOnlyPkgs, pkg.name);
         if (exports.options.semver && specs.current === specs.wanted) {
             grunt.log.ok('Package is up to date');
             return done();
         }
-        if (updateType === 'fail') {
+        if ((updateType === 'fail') && (!onlyReportPkg)) {
             grunt.warn('Found an outdated package: ' + String(pkg.name).underline + '.', 3);
         }
         if (updateType === 'report') {
             return done();
         }
-        if (shouldOnlyReport(exports.options.reportOnlyPkgs, pkg.name)) {
+        if (onlyReportPkg) {
             return done();
         }
         var spawnArgs = getSpawnArguments(
